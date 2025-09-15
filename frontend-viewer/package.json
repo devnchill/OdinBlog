@@ -1,0 +1,21 @@
+{
+  "name": "@odinblog/frontend-viewer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "@odinblog/common": "*"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react-swc": "^4.0.0",
+    "vite": "^7.1.2"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "odinblog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:devnchill/OdinBlog.git",
+  "author": "0xDev <169875752+devnchill@users.noreply.github.com>",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend-viewer",
+    "frontend-author",
+    "common"
+  ],
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "@eslint/js": "^9.33.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "eslint": "^9.33.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "typescript-eslint": "^8.39.1"
+  }
+}
