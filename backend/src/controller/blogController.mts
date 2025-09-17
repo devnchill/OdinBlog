@@ -1,22 +1,23 @@
 import type { Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 
-export async function getAllBlogs(req: Request, res: Response) {
+export async function getAllBlogs(_req: Request, res: Response) {
   try {
     const blogs = await prisma.blog.findMany({
       where: {
         isPublished: true,
       },
     });
+
     return res.status(200).json({
       success: true,
       message: "sending all blogs",
-      blogs,
+      data: blogs,
     });
   } catch (err) {
     console.log(err);
     //TODO: check for different prisma error
-    return res.status(501).json({
+    return res.status(500).json({
       success: false,
       message: "internal server error",
     });
@@ -25,21 +26,26 @@ export async function getAllBlogs(req: Request, res: Response) {
 
 export async function getBlog(req: Request, res: Response) {
   const { blogId } = req.params;
-  if (Number.isNaN(blogId) || !blogId)
-    return res.status(400).json({
-      success: false,
-      message: "invalid blogId",
-    });
+  const id = Number(blogId);
+  if (!blogId || Number.isNaN(id)) {
+    return res.status(400).json({ success: false, message: "invalid blogId" });
+  }
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id: parseInt(blogId),
+        id,
       },
     });
-    return res.status(400).json({
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ success: false, message: `Blog ${id} not found` });
+    }
+
+    return res.status(200).json({
       success: true,
       message: `sending blog with blogId ${blogId}`,
-      blog,
+      data: blog,
     });
   } catch (err) {
     //TODO: check for different prisma error
@@ -52,7 +58,7 @@ export async function getBlog(req: Request, res: Response) {
 }
 
 export async function createBlog(req: Request, res: Response) {
-  const { title, content } = req.body;
+  const { title, content, isPublished } = req.body;
   const authorId = req.user.id;
   if (!title || !content || !authorId)
     return res.status(400).json({
@@ -65,16 +71,17 @@ export async function createBlog(req: Request, res: Response) {
         authorId,
         title,
         content,
+        isPublished: isPublished ?? true,
       },
     });
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: "blog created",
-      blog,
+      data: blog,
     });
   } catch (err) {
     //TODO: check for different prisma error
-    return res.status(501).json({
+    return res.status(500).json({
       success: false,
       message: "internal server error",
     });
@@ -83,7 +90,8 @@ export async function createBlog(req: Request, res: Response) {
 
 export async function deleteBlog(req: Request, res: Response) {
   const { blogId } = req.params;
-  if (Number.isNaN(blogId) || !blogId)
+  const id = Number(blogId);
+  if (Number.isNaN(id) || !blogId)
     return res.status(400).json({
       success: false,
       message: "invalid blogId",
@@ -91,13 +99,14 @@ export async function deleteBlog(req: Request, res: Response) {
   try {
     const blog = await prisma.blog.delete({
       where: {
-        id: parseInt(blogId),
+        id,
       },
     });
-    return res.status(400).json({
+
+    return res.status(200).json({
       success: true,
       message: `deleted blog with blogId ${blogId}`,
-      blog,
+      data: blog,
     });
   } catch (err) {
     //TODO: check for different prisma error
@@ -109,4 +118,43 @@ export async function deleteBlog(req: Request, res: Response) {
   }
 }
 
-export function editBlog(req: Request, res: Response) {}
+export async function editBlog(req: Request, res: Response) {
+  const { title, content, isPublished } = req.body;
+  const { blogId } = req.params;
+  const id = Number(blogId);
+  if (!title || !content)
+    return res.status(400).json({
+      success: false,
+      message: "authorId,title or content for creating blog not found",
+    });
+  if (!blogId || Number.isNaN(id))
+    return res.status(400).json({
+      success: false,
+      message: "invalid blogId",
+    });
+  try {
+    const blog = await prisma.blog.update({
+      data: {
+        title,
+        content,
+        isPublished: isPublished ?? true,
+      },
+      where: {
+        id,
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `blog with blogId:${blogId} edited successfully`,
+      data: blog,
+    });
+  } catch (err) {
+    console.log(err);
+    //TODO: check for different prisma error
+    return res.status(500).json({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
