@@ -32,6 +32,8 @@ export async function createUser(req: Request, res: Response) {
     });
   } catch (err) {
     //TODO: check for different types of error .
+    console.log(err);
+
     res.status(500).json({
       success: false,
       message: "internal server error",

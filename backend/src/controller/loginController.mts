@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import type { TUserOnReq } from "../types/express.mjs";
 
 export async function loginUser(req: Request, res: Response) {
   try {
@@ -19,5 +21,27 @@ export async function loginUser(req: Request, res: Response) {
         message: `invalid username or password`,
       });
     }
-  } catch (err) {}
+    const reqUser: TUserOnReq = {
+      id: user.id,
+      userName: user.userName,
+      role: user.role,
+    };
+
+    const token = jwt.sign(
+      reqUser,
+      process.env.SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
+    );
+
+    return res.status(200).json({
+      message: "login successfull",
+      success: true,
+      token,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      success: false,
+      message: "internal server error",
+    });
+  }
 }

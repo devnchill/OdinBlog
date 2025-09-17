@@ -39,15 +39,16 @@ model User {
 }
 
 model Blog {
-  id        Int        @id @default(autoincrement())
-  title     String
-  content   String
-  authorId  Int
-  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Comment   Comment[]
-  Reaction  Reaction[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id          Int        @id @default(autoincrement())
+  title       String
+  content     String
+  isPublished Boolean    @default(true)
+  authorId    Int
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Comment     Comment[]
+  Reaction    Reaction[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Comment {
