@@ -3,6 +3,7 @@ import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../middlewares/verifyOwnership.mjs";
 
 export async function getAllBlogs(_req: Request, res: Response) {
+  //TODO: Allow pagination so that not all blogs are fetched together.
   try {
     const blogs = await prisma.blog.findMany({
       where: {

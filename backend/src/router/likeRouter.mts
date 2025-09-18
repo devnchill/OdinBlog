@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { verifyJwt } from "../middlewares/verifyToken.mjs";
 
-const likeRouter = Router();
+const reactionRouter = Router();
 
-likeRouter.get("/");
+reactionRouter.get("/");
 
-likeRouter.use(verifyJwt);
+reactionRouter.use(verifyJwt);
 
-likeRouter.post("/new");
-likeRouter.patch("/:likeId");
-likeRouter.delete("/:likeId");
+reactionRouter.post("/new");
+reactionRouter.patch("/:reactionId");
+reactionRouter.delete("/:reactionId");
 
-export default likeRouter;
+export default reactionRouter;
