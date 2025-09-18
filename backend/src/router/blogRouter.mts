@@ -9,20 +9,24 @@ import {
 import { verifyJwt } from "../middlewares/verifyToken.mjs";
 import verifyRole from "../middlewares/verifyRole.mjs";
 import { Role } from "../generated/prisma/enums.js";
+import commentRouter from "./commentRouter.mjs";
+import reactionRouter from "./reactionRouter.mjs";
 
 const blogRouter = Router({ mergeParams: true });
 
+// ----- guest (no account) -----
 blogRouter.get("/", getAllBlogs);
 blogRouter.get("/:blogId", getBlog);
 
-//for user who have created account
-blogRouter.use(verifyJwt);
+// ----- comments & reactions (auth required for CUD) {No auth for viewing the comments} -----
+blogRouter.use("/:blogId/comments", commentRouter);
+blogRouter.use("/:blogId/reactions", reactionRouter);
 
-//for author as well as admin
-blogRouter.use(verifyRole(Role.AUTHOR));
+// ----- blog CRUD {author(only the one owned by him)/admin(owned by anyone) only} -----
+blogRouter.use(verifyJwt, verifyRole(Role.AUTHOR));
 
 blogRouter.post("/new", createBlog);
 blogRouter.delete("/:blogId", deleteBlog);
-blogRouter.put("/:blogId", editBlog);
+blogRouter.patch("/:blogId", editBlog);
 
 export default blogRouter;
