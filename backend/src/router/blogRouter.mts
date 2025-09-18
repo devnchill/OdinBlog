@@ -12,13 +12,17 @@ import { Role } from "../generated/prisma/enums.js";
 
 const blogRouter = Router({ mergeParams: true });
 
+//for guest (who haven't created account)
 blogRouter.get("/", getAllBlogs);
+
+//for user who have created account. can CRUD comments/like they made
+blogRouter.use("/:blogId/comments", verifyJwt);
+blogRouter.use("/:blogId/likes", verifyJwt);
+
+//for guest (who haven't created account)
 blogRouter.get("/:blogId", getBlog);
 
-//for user who have created account
-blogRouter.use(verifyJwt);
-
-//for author as well as admin
+//for author and admin
 blogRouter.use(verifyRole(Role.AUTHOR));
 
 blogRouter.post("/new", createBlog);
