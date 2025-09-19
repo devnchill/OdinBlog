@@ -1,6 +1,6 @@
 import { User } from "../generated/prisma/client.js";
 
-export type TUserOnReq = pick<User, "id" | "userName" | "role">;
+export type TUserOnReq = Pick<User, "id" | "userName">;
 
 declare global {
   namespace Express {

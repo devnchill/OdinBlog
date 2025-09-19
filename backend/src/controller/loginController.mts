@@ -7,6 +7,11 @@ import type { TUserOnReq } from "../types/express.mjs";
 export async function loginUser(req: Request, res: Response) {
   try {
     const { userName, password } = req.body;
+    if (!userName || !password)
+      return res.status(401).json({
+        success: false,
+        message: "invalid body",
+      });
     const user = await prisma.user.findFirst({ where: { userName } });
     if (!user) {
       return res.status(404).json({
@@ -24,12 +29,12 @@ export async function loginUser(req: Request, res: Response) {
     const reqUser: TUserOnReq = {
       id: user.id,
       userName: user.userName,
-      role: user.role,
     };
 
     const token = jwt.sign(
       reqUser,
       process.env.SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
+      { expiresIn: "7d" },
     );
 
     return res.status(200).json({
