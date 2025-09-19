@@ -20,7 +20,7 @@ export async function createReaction(req: Request, res: Response) {
     });
   }
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     const createdReaction = await prisma.reaction.create({
       data: {
         userId,
@@ -97,7 +97,7 @@ export async function updateReaction(req: Request, res: Response) {
         message: "reaction not found",
       });
     }
-    const isAllowed = verifyOwnership(req.user, existingReaction);
+    const isAllowed = await verifyOwnership(req.user!, existingReaction);
     if (isAllowed) {
       const updatedreaction = await prisma.reaction.update({
         where: {
@@ -128,7 +128,7 @@ export async function updateReaction(req: Request, res: Response) {
   }
 }
 
-export async function deletereactiong(req: Request, res: Response) {
+export async function deleteReactiong(req: Request, res: Response) {
   const { reactionId } = req.params;
   const id = Number(reactionId);
   if (Number.isNaN(id) || !reactionId)
@@ -148,7 +148,7 @@ export async function deletereactiong(req: Request, res: Response) {
         message: "reactiong not found",
       });
     }
-    const isAllowed = verifyOwnership(req.user, existingReaction);
+    const isAllowed = await verifyOwnership(req.user!, existingReaction);
     if (isAllowed) {
       await prisma.reaction.delete({
         where: {

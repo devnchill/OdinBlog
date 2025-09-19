@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import type { TUserOnReq } from "../types/express.mjs";
 
 export async function verifyJwt(
   req: Request,
@@ -15,7 +16,7 @@ export async function verifyJwt(
     const decoded = jwt.verify(
       token,
       process.env.SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
-    );
+    ) as TUserOnReq;
     req.user = decoded;
     next();
   } catch (err) {

@@ -1,20 +1,32 @@
+import prisma from "../client/prismaClient.mjs";
+import type { User } from "../generated/prisma/client.js";
 import { Role } from "../generated/prisma/enums.js";
 import type { TUserOnReq } from "../types/express.mjs";
 
 type Ownable = { authorId: number } | { userId: number };
 
-export default function verifyOwnership<T extends Ownable>(
+export default async function verifyOwnership<T extends Ownable>(
   user: TUserOnReq,
   resource: T,
-): { success: boolean } {
+): Promise<boolean> {
+  const { id } = user;
+  const userFromDb: Pick<User, "role"> | null = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      role: true,
+    },
+  });
+  if (!userFromDb) {
+    return false;
+  }
   if (
-    user.role === Role.ADMIN ||
-    (user.role === Role.AUTHOR &&
+    userFromDb.role === Role.ADMIN ||
+    (userFromDb.role === Role.AUTHOR &&
       (("userId" in resource && resource.userId === user.id) ||
         ("authorId" in resource && resource.authorId === user.id)))
   ) {
-    return { success: true };
+    return true;
   }
 
-  return { success: false };
+  return false;
 }

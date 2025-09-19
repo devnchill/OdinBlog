@@ -61,7 +61,7 @@ export async function getBlog(req: Request, res: Response) {
 
 export async function createBlog(req: Request, res: Response) {
   const { title, content, isPublished } = req.body;
-  const authorId = req.user.id;
+  const authorId = req.user!.id;
   if (!title || !content || !authorId)
     return res.status(400).json({
       success: false,
@@ -110,7 +110,7 @@ export async function deleteBlog(req: Request, res: Response) {
         message: "Blog not found",
       });
     }
-    const isAllowed = verifyOwnership(req.user, blog);
+    const isAllowed = await verifyOwnership(req.user!, blog);
     if (isAllowed) {
       await prisma.blog.delete({
         where: {
@@ -150,7 +150,7 @@ export async function editBlog(req: Request, res: Response) {
   if (!title || !content)
     return res.status(400).json({
       success: false,
-      message: "authorId,title or content for creating blog not found",
+      message: "authorId,title or content for editing blog not found",
     });
   try {
     const blog = await prisma.blog.findUnique({
@@ -164,9 +164,9 @@ export async function editBlog(req: Request, res: Response) {
         message: "Blog not found",
       });
     }
-    const isAllowed = verifyOwnership(req.user, blog);
+    const isAllowed = await verifyOwnership(req.user!, blog);
     if (isAllowed) {
-      await prisma.blog.update({
+      const updatedBLog = await prisma.blog.update({
         data: {
           title,
           content,
@@ -178,8 +178,8 @@ export async function editBlog(req: Request, res: Response) {
       });
       return res.status(200).json({
         success: true,
-        message: `deleted blog with blogId ${blogId}`,
-        data: blog,
+        message: `edited blog with blogId ${blogId}`,
+        data: updatedBLog,
       });
     }
 

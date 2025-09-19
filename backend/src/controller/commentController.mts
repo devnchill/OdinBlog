@@ -47,7 +47,7 @@ export async function createComment(req: Request, res: Response) {
     });
   }
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     const comment = await prisma.comment.create({
       data: {
         userId,
@@ -90,7 +90,7 @@ export async function deleteComment(req: Request, res: Response) {
         message: "comment not found",
       });
     }
-    const isAllowed = verifyOwnership(req.user, comment);
+    const isAllowed = await verifyOwnership(req.user!, comment);
     if (isAllowed) {
       await prisma.comment.delete({
         where: {
@@ -144,7 +144,7 @@ export async function updateComment(req: Request, res: Response) {
         message: "comment not found",
       });
     }
-    const isAllowed = verifyOwnership(req.user, existingComment);
+    const isAllowed = await verifyOwnership(req.user!, existingComment);
     if (isAllowed) {
       const updatedComment = await prisma.comment.update({
         where: {
