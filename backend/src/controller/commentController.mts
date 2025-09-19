@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../middlewares/verifyOwnership.mjs";
-import commentRouter from "../router/commentRouter.mjs";
 
 export async function getAllCommentsOfABlog(req: Request, res: Response) {
   const { blogId } = req.body;
