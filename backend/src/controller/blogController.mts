@@ -1,8 +1,12 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../middlewares/verifyOwnership.mjs";
 
-export async function getAllBlogs(_req: Request, res: Response) {
+export async function getAllBlogs(
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   //TODO: Allow pagination so that not all blogs are fetched together.
   try {
     const blogs = await prisma.blog.findMany({
@@ -18,15 +22,11 @@ export async function getAllBlogs(_req: Request, res: Response) {
     });
   } catch (err) {
     console.log(err);
-    //TODO: check for different prisma error
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function getBlog(req: Request, res: Response) {
+export async function getBlog(req: Request, res: Response, next: NextFunction) {
   const { blogId } = req.params;
   const id = Number(blogId);
   if (!blogId || Number.isNaN(id)) {
@@ -50,16 +50,16 @@ export async function getBlog(req: Request, res: Response) {
       data: blog,
     });
   } catch (err) {
-    //TODO: check for different prisma error
     console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function createBlog(req: Request, res: Response) {
+export async function createBlog(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { title, content, isPublished } = req.body;
   const authorId = req.user!.id;
   if (!title || !content || !authorId)
@@ -82,15 +82,15 @@ export async function createBlog(req: Request, res: Response) {
       data: blog,
     });
   } catch (err) {
-    //TODO: check for different prisma error
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function deleteBlog(req: Request, res: Response) {
+export async function deleteBlog(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { blogId } = req.params;
   const id = Number(blogId);
   if (Number.isNaN(id) || !blogId)
@@ -129,16 +129,16 @@ export async function deleteBlog(req: Request, res: Response) {
       });
     }
   } catch (err) {
-    //TODO: check for different prisma error
     console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function editBlog(req: Request, res: Response) {
+export async function editBlog(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { blogId } = req.params;
   const id = Number(blogId);
   if (!blogId || Number.isNaN(id))
@@ -189,10 +189,6 @@ export async function editBlog(req: Request, res: Response) {
     });
   } catch (err) {
     console.log(err);
-    //TODO: check for different prisma error
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }

@@ -1,4 +1,5 @@
 import express from "express";
+import type { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import signUpRouter from "./router/signUpRouter.mjs";
 import loginRouter from "./router/loginRouter.mjs";
@@ -15,6 +16,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/v1/signup", signUpRouter);
 app.use("/v1/login", loginRouter);
 app.use("/v1/", blogRouter);
+
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  if (err) {
+    return res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "internal server error",
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log("Server listening on PORT:", PORT);

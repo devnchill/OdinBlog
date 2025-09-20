@@ -1,8 +1,12 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../middlewares/verifyOwnership.mjs";
 
-export async function createReaction(req: Request, res: Response) {
+export async function createReaction(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { blogId } = req.params;
   const numberBlogId = Number(blogId);
   if (!blogId || Number.isNaN(numberBlogId)) {
@@ -11,7 +15,6 @@ export async function createReaction(req: Request, res: Response) {
       message: `invalid blogId ${blogId}`,
     });
   }
-  //TODO: check for type of reaction
   const { reactionType } = req.body;
   if (!reactionType) {
     return res.status(400).json({
@@ -34,16 +37,15 @@ export async function createReaction(req: Request, res: Response) {
       data: createdReaction,
     });
   } catch (err) {
-    //TODO: prisma error handling
-    console.log(err);
-    return res.status(400).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function getAllReaction(req: Request, res: Response) {
+export async function getAllReaction(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { blogId } = req.body;
   if (!blogId || !Number(blogId)) {
     return res.status(400).json({
@@ -62,16 +64,15 @@ export async function getAllReaction(req: Request, res: Response) {
       message: `sending all reactions for blogId : ${blogId}`,
     });
   } catch (err) {
-    //TODO: handle prisma error
-    console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function updateReaction(req: Request, res: Response) {
+export async function updateReaction(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { reactionId } = req.params;
   const id = Number(reactionId);
   if (Number.isNaN(id) || !reactionId)
@@ -119,16 +120,15 @@ export async function updateReaction(req: Request, res: Response) {
       });
     }
   } catch (err) {
-    //TODO: check for different prisma error
-    console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function deleteReactiong(req: Request, res: Response) {
+export async function deleteReactiong(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { reactionId } = req.params;
   const id = Number(reactionId);
   if (Number.isNaN(id) || !reactionId)
@@ -167,11 +167,6 @@ export async function deleteReactiong(req: Request, res: Response) {
       });
     }
   } catch (err) {
-    //TODO: check for different prisma error
-    console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }

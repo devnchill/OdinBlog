@@ -1,8 +1,12 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../middlewares/verifyOwnership.mjs";
 
-export async function getAllCommentsOfABlog(req: Request, res: Response) {
+export async function getAllCommentsOfABlog(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { blogId } = req.body;
   if (!blogId || !Number(blogId)) {
     return res.status(400).json({
@@ -21,16 +25,16 @@ export async function getAllCommentsOfABlog(req: Request, res: Response) {
       message: `sending all comments for blogId : ${blogId}`,
     });
   } catch (err) {
-    //TODO: handle prisma error
     console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function createComment(req: Request, res: Response) {
+export async function createComment(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { blogId } = req.params;
   const numberBlogId = Number(blogId);
   if (!blogId || Number.isNaN(numberBlogId)) {
@@ -61,16 +65,16 @@ export async function createComment(req: Request, res: Response) {
       data: comment,
     });
   } catch (err) {
-    //TODO: prisma error handling
     console.log(err);
-    return res.status(400).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function deleteComment(req: Request, res: Response) {
+export async function deleteComment(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { blogId } = req.params;
   const id = Number(blogId);
   if (Number.isNaN(id) || !blogId)
@@ -109,16 +113,16 @@ export async function deleteComment(req: Request, res: Response) {
       });
     }
   } catch (err) {
-    //TODO: check for different prisma error
     console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
 
-export async function updateComment(req: Request, res: Response) {
+export async function updateComment(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const { commentId } = req.params;
   const id = Number(commentId);
   if (Number.isNaN(id) || !commentId)
@@ -166,11 +170,7 @@ export async function updateComment(req: Request, res: Response) {
       });
     }
   } catch (err) {
-    //TODO: check for different prisma error
     console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }

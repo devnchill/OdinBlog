@@ -1,10 +1,14 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { TUserOnReq } from "../types/express.mjs";
 
-export async function loginUser(req: Request, res: Response) {
+export async function loginUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { userName, password } = req.body;
     if (!userName || !password)
@@ -43,10 +47,6 @@ export async function loginUser(req: Request, res: Response) {
       token,
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
