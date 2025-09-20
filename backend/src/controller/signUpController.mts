@@ -1,8 +1,12 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import bcrypt from "bcryptjs";
 
-export async function createUser(req: Request, res: Response) {
+export async function createUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { userName, password } = req.body;
     //TODO: Use zod for validating and sanitizing data.
@@ -31,12 +35,6 @@ export async function createUser(req: Request, res: Response) {
       message: "user created successfully",
     });
   } catch (err) {
-    //TODO: check for different types of error .
-    console.log(err);
-
-    res.status(500).json({
-      success: false,
-      message: "internal server error",
-    });
+    next(err);
   }
 }
