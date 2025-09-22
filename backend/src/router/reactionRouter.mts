@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJwt } from "../middlewares/verifyToken.mjs";
+import { verifyJwt } from "../middleware/verifyToken.mjs";
 import {
   createReaction,
   deleteReactiong,
@@ -7,7 +7,7 @@ import {
   updateReaction,
 } from "../controller/reactionController.mjs";
 
-const reactionRouter = Router();
+const reactionRouter = Router({ mergeParams: true });
 
 reactionRouter.get("/", getAllReaction);
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJwt } from "../middlewares/verifyToken.mjs";
+import { verifyJwt } from "../middleware/verifyToken.mjs";
 import {
   createComment,
   deleteComment,

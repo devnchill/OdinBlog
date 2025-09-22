@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
-import verifyOwnership from "../middlewares/verifyOwnership.mjs";
+import verifyOwnership from "../util/verifyOwnership.mjs";
+import { blogIdSchema, blogBodySchema, authorIdSchema } from "@odinblog/common";
 
 export async function getAllBlogs(
   _req: Request,
@@ -27,11 +28,7 @@ export async function getAllBlogs(
 }
 
 export async function getBlog(req: Request, res: Response, next: NextFunction) {
-  const { blogId } = req.params;
-  const id = Number(blogId);
-  if (!blogId || Number.isNaN(id)) {
-    return res.status(400).json({ success: false, message: "invalid blogId" });
-  }
+  const id = req.validationData;
   try {
     const blog = await prisma.blog.findUnique({
       where: {
@@ -46,7 +43,7 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
 
     return res.status(200).json({
       success: true,
-      message: `sending blog with blogId ${blogId}`,
+      message: `sending blog with blogId ${id}`,
       data: blog,
     });
   } catch (err) {
@@ -60,20 +57,22 @@ export async function createBlog(
   res: Response,
   next: NextFunction,
 ) {
-  const { title, content, isPublished } = req.body;
-  const authorId = req.user!.id;
-  if (!title || !content || !authorId)
+  const blogValidation = req.validationData;
+  const authorId = req.user?.id;
+  const authorIdValidation = authorIdSchema.safeParse(authorId);
+  if (!authorIdValidation.success) {
     return res.status(400).json({
       success: false,
-      message: "authorId,title or content for creating blog not found",
+      message: authorIdValidation.error.issues,
     });
+  }
   try {
     const blog = await prisma.blog.create({
       data: {
-        authorId,
-        title,
-        content,
-        isPublished: isPublished ?? true,
+        authorId: authorIdValidation.data,
+        title: blogValidation.data.title,
+        content: blogValidation.data.content,
+        isPublished: blogValidation.data.isPublished,
       },
     });
     return res.status(201).json({
@@ -92,16 +91,17 @@ export async function deleteBlog(
   next: NextFunction,
 ) {
   const { blogId } = req.params;
-  const id = Number(blogId);
-  if (Number.isNaN(id) || !blogId)
+  const blogValidation = blogIdSchema.safeParse(blogId);
+  if (!blogValidation.success) {
     return res.status(400).json({
       success: false,
-      message: "invalid blogId",
+      message: blogValidation.error.issues,
     });
+  }
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id,
+        id: blogValidation.data,
       },
     });
     if (!blog) {
@@ -114,7 +114,7 @@ export async function deleteBlog(
     if (isAllowed) {
       await prisma.blog.delete({
         where: {
-          id,
+          id: blogValidation.data,
         },
       });
       return res.status(200).json({
@@ -140,22 +140,26 @@ export async function editBlog(
   next: NextFunction,
 ) {
   const { blogId } = req.params;
-  const id = Number(blogId);
-  if (!blogId || Number.isNaN(id))
+  const blogIdValidation = blogIdSchema.safeParse(blogId);
+  const blogPayload = req.body;
+  const blogValidation = blogBodySchema.safeParse(blogPayload);
+  if (!blogValidation.success) {
     return res.status(400).json({
       success: false,
-      message: "invalid blogId",
+      message: blogValidation.error.issues,
     });
-  const { title, content, isPublished } = req.body;
-  if (!title || !content)
+  }
+  if (!blogIdValidation.success) {
     return res.status(400).json({
       success: false,
-      message: "authorId,title or content for editing blog not found",
+      message: blogIdValidation.error.issues,
     });
+  }
+
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id,
+        id: blogIdValidation.data,
       },
     });
     if (!blog) {
@@ -168,12 +172,12 @@ export async function editBlog(
     if (isAllowed) {
       const updatedBLog = await prisma.blog.update({
         data: {
-          title,
-          content,
-          isPublished: isPublished ?? true,
+          title: blogValidation.data.title,
+          content: blogValidation.data.content,
+          isPublished: blogValidation.data.isPublished,
         },
         where: {
-          id,
+          id: blogIdValidation.data,
         },
       });
       return res.status(200).json({

@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from "../client/prismaClient.mjs";
-import verifyOwnership from "../middlewares/verifyOwnership.mjs";
+import verifyOwnership from "../util/verifyOwnership.mjs";
+import { ReactionSchema } from "@odinblog/common";
 
 export async function createReaction(
   req: Request,
@@ -8,6 +9,8 @@ export async function createReaction(
   next: NextFunction,
 ) {
   const { blogId } = req.params;
+  console.log(blogId);
+
   const numberBlogId = Number(blogId);
   if (!blogId || Number.isNaN(numberBlogId)) {
     return res.status(400).json({
@@ -16,10 +19,11 @@ export async function createReaction(
     });
   }
   const { reactionType } = req.body;
-  if (!reactionType) {
-    return res.status(400).json({
+  const data = ReactionSchema.safeParse(reactionType);
+  if (!data.success) {
+    return res.status(Number(data.error.issues[0]?.code)).json({
       success: false,
-      message: `invalid reaction`,
+      message: data.error.issues[0]?.message,
     });
   }
   try {
