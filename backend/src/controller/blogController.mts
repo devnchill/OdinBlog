@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
-import verifyOwnership from "../middlewares/verifyOwnership.mjs";
+import verifyOwnership from "../util/verifyOwnership.mjs";
 
 export async function getAllBlogs(
   _req: Request,
@@ -27,21 +27,17 @@ export async function getAllBlogs(
 }
 
 export async function getBlog(req: Request, res: Response, next: NextFunction) {
-  const { blogId } = req.params;
-  const id = Number(blogId);
-  if (!blogId || Number.isNaN(id)) {
-    return res.status(400).json({ success: false, message: "invalid blogId" });
-  }
+  const { blogId } = req.validationData;
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id,
+        id: blogId,
       },
     });
     if (!blog) {
       return res
         .status(404)
-        .json({ success: false, message: `Blog ${id} not found` });
+        .json({ success: false, message: `Blog ${blogId} not found` });
     }
 
     return res.status(200).json({
@@ -60,20 +56,14 @@ export async function createBlog(
   res: Response,
   next: NextFunction,
 ) {
-  const { title, content, isPublished } = req.body;
-  const authorId = req.user!.id;
-  if (!title || !content || !authorId)
-    return res.status(400).json({
-      success: false,
-      message: "authorId,title or content for creating blog not found",
-    });
+  const { id, title, content, isPublished } = req.validationData;
   try {
     const blog = await prisma.blog.create({
       data: {
-        authorId,
+        authorId: id,
         title,
         content,
-        isPublished: isPublished ?? true,
+        isPublished,
       },
     });
     return res.status(201).json({
@@ -91,17 +81,11 @@ export async function deleteBlog(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.params;
-  const id = Number(blogId);
-  if (Number.isNaN(id) || !blogId)
-    return res.status(400).json({
-      success: false,
-      message: "invalid blogId",
-    });
+  const { blogId } = req.validationData;
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id,
+        id: blogId,
       },
     });
     if (!blog) {
@@ -114,7 +98,7 @@ export async function deleteBlog(
     if (isAllowed) {
       await prisma.blog.delete({
         where: {
-          id,
+          id: blogId,
         },
       });
       return res.status(200).json({
@@ -139,23 +123,12 @@ export async function editBlog(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.params;
-  const id = Number(blogId);
-  if (!blogId || Number.isNaN(id))
-    return res.status(400).json({
-      success: false,
-      message: "invalid blogId",
-    });
-  const { title, content, isPublished } = req.body;
-  if (!title || !content)
-    return res.status(400).json({
-      success: false,
-      message: "authorId,title or content for editing blog not found",
-    });
+  const { blogId, title, content, isPublished } = req.validationData;
+
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id,
+        id: blogId,
       },
     });
     if (!blog) {
@@ -170,10 +143,10 @@ export async function editBlog(
         data: {
           title,
           content,
-          isPublished: isPublished ?? true,
+          isPublished,
         },
         where: {
-          id,
+          id: blogId,
         },
       });
       return res.status(200).json({

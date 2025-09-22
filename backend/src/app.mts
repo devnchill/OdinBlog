@@ -18,6 +18,9 @@ app.use("/v1/login", loginRouter);
 app.use("/v1/", blogRouter);
 
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.log(err);
+  //TODO: Handle different prisma error
+
   if (err) {
     return res.status(err.statusCode || 500).json({
       success: false,

@@ -1,21 +1,15 @@
 import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
-import verifyOwnership from "../middlewares/verifyOwnership.mjs";
+import verifyOwnership from "../util/verifyOwnership.mjs";
 
 export async function getAllCommentsOfABlog(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.body;
-  if (!blogId || !Number(blogId)) {
-    return res.status(400).json({
-      success: false,
-      message: `invalid blogId ${blogId}`,
-    });
-  }
+  const { blogId } = req.validationData;
   try {
-    await prisma.comment.findMany({
+    const comments = await prisma.comment.findMany({
       where: {
         blogId,
       },
@@ -23,6 +17,7 @@ export async function getAllCommentsOfABlog(
     return res.status(200).json({
       success: true,
       message: `sending all comments for blogId : ${blogId}`,
+      comments,
     });
   } catch (err) {
     console.log(err);
@@ -35,28 +30,14 @@ export async function createComment(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.params;
-  const numberBlogId = Number(blogId);
-  if (!blogId || Number.isNaN(numberBlogId)) {
-    return res.status(400).json({
-      success: false,
-      message: `invalid blogId ${blogId}`,
-    });
-  }
-  const { text } = req.body;
-  if (!text) {
-    return res.status(400).json({
-      success: false,
-      message: `invalid comment`,
-    });
-  }
+  const { blogId, text } = req.validationData;
   try {
     const userId = req.user!.id;
     const comment = await prisma.comment.create({
       data: {
         userId,
         text,
-        blogId: numberBlogId,
+        blogId,
       },
     });
     return res.status(200).json({
@@ -75,17 +56,16 @@ export async function deleteComment(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.params;
-  const id = Number(blogId);
-  if (Number.isNaN(id) || !blogId)
-    return res.status(400).json({
-      success: false,
-      message: `invalid blogId ${blogId}`,
-    });
+  const { blogId, commentId } = req.validationData;
   try {
+    await prisma.blog.findFirstOrThrow({
+      where: {
+        id: blogId,
+      },
+    });
     const comment = await prisma.comment.findUnique({
       where: {
-        id,
+        id: commentId,
       },
     });
     if (!comment) {
@@ -98,7 +78,7 @@ export async function deleteComment(
     if (isAllowed) {
       await prisma.comment.delete({
         where: {
-          id,
+          id: commentId,
         },
       });
       return res.status(200).json({
@@ -123,23 +103,11 @@ export async function updateComment(
   res: Response,
   next: NextFunction,
 ) {
-  const { commentId } = req.params;
-  const id = Number(commentId);
-  if (Number.isNaN(id) || !commentId)
-    return res.status(400).json({
-      success: false,
-      message: `invalid commentId ${commentId}`,
-    });
-  const { comment } = req.body;
-  if (!comment)
-    return res.status(400).json({
-      success: false,
-      message: "comment not found in the body",
-    });
+  const { commentId, text } = req.validationData;
   try {
     const existingComment = await prisma.comment.findUnique({
       where: {
-        id,
+        id: commentId,
       },
     });
     if (!existingComment) {
@@ -152,10 +120,10 @@ export async function updateComment(
     if (isAllowed) {
       const updatedComment = await prisma.comment.update({
         where: {
-          id,
+          id: commentId,
         },
         data: {
-          text: comment,
+          text,
         },
       });
       return res.status(200).json({

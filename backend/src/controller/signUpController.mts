@@ -9,8 +9,6 @@ export async function createUser(
 ) {
   try {
     const { userName, password } = req.body;
-    //TODO: Use zod for validating and sanitizing data.
-
     const hasUserName = await prisma.user.findFirst({
       where: { userName },
     });
