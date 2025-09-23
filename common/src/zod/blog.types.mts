@@ -10,9 +10,3 @@ export const blogBodySchema = z.object({
   content: z.coerce.string(),
   isPublished: z.coerce.boolean(),
 });
-export const idSchema = z.object({
-  id: z.coerce.number(),
-});
-
-//reactioncontroller validation   schema
-export const ReactionSchema = z.enum(["LIKE", "DISLIKE"]);

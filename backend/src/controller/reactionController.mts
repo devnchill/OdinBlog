@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
-import { ReactionSchema } from "@odinblog/common";
+import { reactionSchema } from "@odinblog/common";
 
 export async function createReaction(
   req: Request,
@@ -19,7 +19,7 @@ export async function createReaction(
     });
   }
   const { reactionType } = req.body;
-  const data = ReactionSchema.safeParse(reactionType);
+  const data = reactionSchema.safeParse(reactionType);
   if (!data.success) {
     return res.status(Number(data.error.issues[0]?.code)).json({
       success: false,
