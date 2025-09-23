@@ -29,14 +29,15 @@ blogRouter.use("/:blogId/comments", commentRouter);
 blogRouter.use("/:blogId/reactions", reactionRouter);
 
 // ----- blog CRUD {author(only the one owned by him)/admin(owned by anyone) only} -----
-blogRouter.use(verifyJwt, verifyRole(Role.AUTHOR));
+blogRouter.use(
+  verifyJwt,
+  validateFields([{ schema: idSchema, source: "params" }]),
+  verifyRole(Role.AUTHOR),
+);
 
 blogRouter.post(
   "/new",
-  validateFields([
-    { schema: blogBodySchema, source: "body" },
-    { schema: idSchema, source: "user" },
-  ]),
+  validateFields([{ schema: blogBodySchema, source: "body" }]),
   createBlog,
 );
 
@@ -50,7 +51,6 @@ blogRouter.patch(
   "/:blogId",
   validateFields([
     { schema: blogBodySchema, source: "body" },
-    { schema: idSchema, source: "user" },
     { schema: blogIdSchema, source: "params" },
   ]),
   editBlog,
