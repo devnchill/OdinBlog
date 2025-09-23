@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type z from "zod";
 
-type TSource = "query" | "params" | "body";
+type TSource = "query" | "params" | "body" | "user";
 
 type SchemaWithSource = {
   schema: z.ZodTypeAny;
@@ -17,7 +17,10 @@ export default function validateFields(schemas: SchemaWithSource[]) {
     req.validationData = {};
     for (const { schema, source } of schemas) {
       const input = req[source];
+      console.log(input);
+
       const result = schema.safeParse(input);
+
       if (!result.success) {
         return res.status(400).json({
           success: false,

@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
-import { blogIdSchema, blogBodySchema, authorIdSchema } from "@odinblog/common";
 
 export async function getAllBlogs(
   _req: Request,
@@ -28,22 +27,22 @@ export async function getAllBlogs(
 }
 
 export async function getBlog(req: Request, res: Response, next: NextFunction) {
-  const id = req.validationData;
+  const { blogId } = req.validationData;
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id,
+        id: blogId,
       },
     });
     if (!blog) {
       return res
         .status(404)
-        .json({ success: false, message: `Blog ${id} not found` });
+        .json({ success: false, message: `Blog ${blogId} not found` });
     }
 
     return res.status(200).json({
       success: true,
-      message: `sending blog with blogId ${id}`,
+      message: `sending blog with blogId ${blogId}`,
       data: blog,
     });
   } catch (err) {
@@ -57,22 +56,14 @@ export async function createBlog(
   res: Response,
   next: NextFunction,
 ) {
-  const blogValidation = req.validationData;
-  const authorId = req.user?.id;
-  const authorIdValidation = authorIdSchema.safeParse(authorId);
-  if (!authorIdValidation.success) {
-    return res.status(400).json({
-      success: false,
-      message: authorIdValidation.error.issues,
-    });
-  }
+  const { id, title, content, isPublished } = req.validationData;
   try {
     const blog = await prisma.blog.create({
       data: {
-        authorId: authorIdValidation.data,
-        title: blogValidation.data.title,
-        content: blogValidation.data.content,
-        isPublished: blogValidation.data.isPublished,
+        authorId: id,
+        title,
+        content,
+        isPublished,
       },
     });
     return res.status(201).json({
@@ -90,18 +81,11 @@ export async function deleteBlog(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.params;
-  const blogValidation = blogIdSchema.safeParse(blogId);
-  if (!blogValidation.success) {
-    return res.status(400).json({
-      success: false,
-      message: blogValidation.error.issues,
-    });
-  }
+  const { blogId } = req.validationData;
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id: blogValidation.data,
+        id: blogId,
       },
     });
     if (!blog) {
@@ -114,7 +98,7 @@ export async function deleteBlog(
     if (isAllowed) {
       await prisma.blog.delete({
         where: {
-          id: blogValidation.data,
+          id: blogId,
         },
       });
       return res.status(200).json({
@@ -139,27 +123,12 @@ export async function editBlog(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.params;
-  const blogIdValidation = blogIdSchema.safeParse(blogId);
-  const blogPayload = req.body;
-  const blogValidation = blogBodySchema.safeParse(blogPayload);
-  if (!blogValidation.success) {
-    return res.status(400).json({
-      success: false,
-      message: blogValidation.error.issues,
-    });
-  }
-  if (!blogIdValidation.success) {
-    return res.status(400).json({
-      success: false,
-      message: blogIdValidation.error.issues,
-    });
-  }
+  const { blogId, title, content, isPublished } = req.validationData;
 
   try {
     const blog = await prisma.blog.findUnique({
       where: {
-        id: blogIdValidation.data,
+        id: blogId,
       },
     });
     if (!blog) {
@@ -172,12 +141,12 @@ export async function editBlog(
     if (isAllowed) {
       const updatedBLog = await prisma.blog.update({
         data: {
-          title: blogValidation.data.title,
-          content: blogValidation.data.content,
-          isPublished: blogValidation.data.isPublished,
+          title,
+          content,
+          isPublished,
         },
         where: {
-          id: blogIdValidation.data,
+          id: blogId,
         },
       });
       return res.status(200).json({

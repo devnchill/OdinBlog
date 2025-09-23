@@ -12,7 +12,7 @@ import { Role } from "../generated/prisma/enums.js";
 import commentRouter from "./commentRouter.mjs";
 import reactionRouter from "./reactionRouter.mjs";
 import validateFields from "../util/validateFields.mjs";
-import { blogBodySchema, blogIdSchema } from "@odinblog/common";
+import { idSchema, blogBodySchema, blogIdSchema } from "@odinblog/common";
 
 const blogRouter = Router();
 
@@ -33,11 +33,27 @@ blogRouter.use(verifyJwt, verifyRole(Role.AUTHOR));
 
 blogRouter.post(
   "/new",
-  validateFields([{ schema: blogBodySchema, source: "body" }]),
+  validateFields([
+    { schema: blogBodySchema, source: "body" },
+    { schema: idSchema, source: "user" },
+  ]),
   createBlog,
 );
 
-blogRouter.delete("/:blogId", deleteBlog);
-blogRouter.patch("/:blogId", editBlog);
+blogRouter.delete(
+  "/:blogId",
+  validateFields([{ schema: blogIdSchema, source: "params" }]),
+  deleteBlog,
+);
+
+blogRouter.patch(
+  "/:blogId",
+  validateFields([
+    { schema: blogBodySchema, source: "body" },
+    { schema: idSchema, source: "user" },
+    { schema: blogIdSchema, source: "params" },
+  ]),
+  editBlog,
+);
 
 export default blogRouter;
