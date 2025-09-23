@@ -1,37 +1,18 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
-import { reactionSchema } from "@odinblog/common";
 
 export async function createReaction(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.params;
-  console.log(blogId);
-
-  const numberBlogId = Number(blogId);
-  if (!blogId || Number.isNaN(numberBlogId)) {
-    return res.status(400).json({
-      success: false,
-      message: `invalid blogId ${blogId}`,
-    });
-  }
-  const { reactionType } = req.body;
-  const data = reactionSchema.safeParse(reactionType);
-  if (!data.success) {
-    return res.status(Number(data.error.issues[0]?.code)).json({
-      success: false,
-      message: data.error.issues[0]?.message,
-    });
-  }
+  const { blogId, reactionType, userId } = req.validationData;
   try {
-    const userId = req.user!.id;
     const createdReaction = await prisma.reaction.create({
       data: {
         userId,
-        blogId: numberBlogId,
+        blogId,
         type: reactionType,
       },
     });
@@ -50,13 +31,7 @@ export async function getAllReaction(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId } = req.body;
-  if (!blogId || !Number(blogId)) {
-    return res.status(400).json({
-      success: false,
-      message: `invalid blogId ${blogId}`,
-    });
-  }
+  const { blogId } = req.validationData;
   try {
     await prisma.reaction.findMany({
       where: {
@@ -77,23 +52,11 @@ export async function updateReaction(
   res: Response,
   next: NextFunction,
 ) {
-  const { reactionId } = req.params;
-  const id = Number(reactionId);
-  if (Number.isNaN(id) || !reactionId)
-    return res.status(400).json({
-      success: false,
-      message: `invalid reactionId ${reactionId}`,
-    });
-  const { reactionType } = req.body;
-  if (!reactionType)
-    return res.status(400).json({
-      success: false,
-      message: "reaction not found in the body",
-    });
+  const { reactionId, reactionType } = req.validationData;
   try {
     const existingReaction = await prisma.reaction.findUnique({
       where: {
-        id,
+        id: reactionId,
       },
     });
     if (!existingReaction) {
@@ -106,7 +69,7 @@ export async function updateReaction(
     if (isAllowed) {
       const updatedreaction = await prisma.reaction.update({
         where: {
-          id,
+          id: reactionId,
         },
         data: {
           type: reactionType,
@@ -133,17 +96,11 @@ export async function deleteReactiong(
   res: Response,
   next: NextFunction,
 ) {
-  const { reactionId } = req.params;
-  const id = Number(reactionId);
-  if (Number.isNaN(id) || !reactionId)
-    return res.status(400).json({
-      success: false,
-      message: `invalid reactionId ${reactionId}`,
-    });
+  const { reactionId } = req.validationData;
   try {
     const existingReaction = await prisma.reaction.findUnique({
       where: {
-        id,
+        id: reactionId,
       },
     });
     if (!existingReaction) {
@@ -156,7 +113,7 @@ export async function deleteReactiong(
     if (isAllowed) {
       await prisma.reaction.delete({
         where: {
-          id,
+          id: reactionId,
         },
       });
       return res.status(200).json({

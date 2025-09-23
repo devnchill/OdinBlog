@@ -18,7 +18,6 @@ export default function validateFields(schemas: SchemaWithSource[]) {
     for (const { schema, source } of schemas) {
       const input = req[source];
       const result = schema.safeParse(input);
-      console.log(result);
 
       if (!result.success) {
         return res.status(400).json({
