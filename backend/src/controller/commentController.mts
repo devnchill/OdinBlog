@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
+import { Prisma } from "../generated/prisma/client.js";
 
 export async function getAllCommentsOfABlog(
   req: Request,
@@ -20,7 +21,6 @@ export async function getAllCommentsOfABlog(
       comments,
     });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 }
@@ -30,9 +30,9 @@ export async function createComment(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId, text } = req.validationData;
+  const { blogId, text, id } = req.validationData;
+  const userId = id;
   try {
-    const userId = req.user!.id;
     const comment = await prisma.comment.create({
       data: {
         userId,
@@ -40,14 +40,21 @@ export async function createComment(
         blogId,
       },
     });
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: "comment created successfully",
       data: comment,
     });
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2003") {
+        return res.status(404).json({
+          success: false,
+          message: `Could not find blog with blogId ${blogId}`,
+        });
+      }
+    }
+    next(e);
   }
 }
 
@@ -58,11 +65,6 @@ export async function deleteComment(
 ) {
   const { blogId, commentId } = req.validationData;
   try {
-    await prisma.blog.findFirstOrThrow({
-      where: {
-        id: blogId,
-      },
-    });
     const comment = await prisma.comment.findUniqueOrThrow({
       where: {
         id: commentId,
@@ -77,7 +79,7 @@ export async function deleteComment(
       });
       return res.status(200).json({
         success: true,
-        message: `deleted comment with blogId ${blogId}`,
+        message: `Deleted comment ${commentId} from blog ${blogId}`,
         data: comment,
       });
     } else {
@@ -87,7 +89,14 @@ export async function deleteComment(
       });
     }
   } catch (err) {
-    console.log(err);
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Comment or blog not found" });
+    }
     next(err);
   }
 }
@@ -100,33 +109,36 @@ export async function updateComment(
   const { commentId, text } = req.validationData;
   try {
     const existingComment = await prisma.comment.findUniqueOrThrow({
-      where: {
-        id: commentId,
-      },
+      where: { id: commentId },
     });
+
     const isAllowed = await verifyOwnership(req.user!, existingComment);
-    if (isAllowed) {
-      const updatedComment = await prisma.comment.update({
-        where: {
-          id: commentId,
-        },
-        data: {
-          text,
-        },
-      });
-      return res.status(200).json({
-        success: true,
-        message: `updated comment with commentId ${commentId}`,
-        data: updatedComment,
-      });
-    } else {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
+    if (!isAllowed) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
+
+    const updatedComment = await prisma.comment.update({
+      where: { id: commentId },
+      data: { text },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Updated comment with id ${commentId}`,
+      data: updatedComment,
+    });
   } catch (err) {
-    console.log(err);
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: `Comment with id ${commentId} not found`,
+        });
+    }
     next(err);
   }
 }

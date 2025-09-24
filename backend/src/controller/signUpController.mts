@@ -9,22 +9,23 @@ export async function createUser(
 ) {
   try {
     const { userName, password } = req.body;
-    await prisma.user.findUniqueOrThrow({
-      where: { userName },
-    });
-
+    const existingUser = await prisma.user.findUnique({ where: { userName } });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "userName already exists. Please use a different userName",
+      });
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
-
     await prisma.user.create({
       data: {
         userName,
         hashedPassword,
       },
     });
-
-    res.status(200).send({
+    return res.status(201).json({
       success: true,
-      message: "user created successfully",
+      message: "User created successfully",
     });
   } catch (err) {
     next(err);

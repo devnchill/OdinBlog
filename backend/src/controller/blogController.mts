@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
+import { Prisma } from "../generated/prisma/client.js";
 
 export async function getAllBlogs(
   _req: Request,
@@ -13,6 +14,16 @@ export async function getAllBlogs(
       where: {
         isPublished: true,
       },
+      select: {
+        title: true,
+        content: true,
+        createdAt: true,
+        author: {
+          select: {
+            userName: true,
+          },
+        },
+      },
     });
 
     return res.status(200).json({
@@ -20,9 +31,8 @@ export async function getAllBlogs(
       message: "sending all blogs",
       data: blogs,
     });
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (e) {
+    next(e);
   }
 }
 
@@ -33,6 +43,17 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
       where: {
         id: blogId,
       },
+      select: {
+        title: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            userName: true,
+          },
+        },
+      },
     });
 
     return res.status(200).json({
@@ -40,9 +61,16 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
       message: `sending blog with blogId ${blogId}`,
       data: blog,
     });
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        return res.status(404).json({
+          success: false,
+          message: `Could not find blog with blogId ${blogId}`,
+        });
+      }
+    }
+    next(e);
   }
 }
 
@@ -89,6 +117,17 @@ export async function deleteBlog(
         where: {
           id: blogId,
         },
+        select: {
+          title: true,
+          content: true,
+          updatedAt: true,
+          createdAt: true,
+          author: {
+            select: {
+              userName: true,
+            },
+          },
+        },
       });
       return res.status(200).json({
         success: true,
@@ -101,9 +140,16 @@ export async function deleteBlog(
         message: "Unauthorized",
       });
     }
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        return res.status(404).json({
+          success: false,
+          message: `Could not find blog with blogId ${blogId}`,
+        });
+      }
+    }
+    next(e);
   }
 }
 
@@ -131,6 +177,17 @@ export async function editBlog(
         where: {
           id: blogId,
         },
+        select: {
+          title: true,
+          content: true,
+          updatedAt: true,
+          createdAt: true,
+          author: {
+            select: {
+              userName: true,
+            },
+          },
+        },
       });
       return res.status(200).json({
         success: true,
@@ -143,8 +200,15 @@ export async function editBlog(
       success: false,
       message: `Unauthorized`,
     });
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        return res.status(404).json({
+          success: false,
+          message: `Could not find blog with blogId ${blogId}`,
+        });
+      }
+    }
+    next(e);
   }
 }
