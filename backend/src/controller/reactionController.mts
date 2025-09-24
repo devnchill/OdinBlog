@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
+import { Prisma } from "../generated/prisma/client.js";
 
 export async function createReaction(
   req: Request,
@@ -10,37 +11,44 @@ export async function createReaction(
   const { blogId, reactionType, userId } = req.validationData;
   try {
     const createdReaction = await prisma.reaction.create({
-      data: {
-        userId,
-        blogId,
-        type: reactionType,
-      },
+      data: { userId, blogId, type: reactionType },
     });
-    return res.status(200).json({
+
+    return res.status(201).json({
       success: true,
-      message: "reaction created successfully",
+      message: "Reaction created successfully",
       data: createdReaction,
     });
   } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2003"
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog or user not found",
+      });
+    }
     next(err);
   }
 }
 
-export async function getAllReaction(
+export async function getAllReactions(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
   const { blogId } = req.validationData;
   try {
-    await prisma.reaction.findMany({
-      where: {
-        blogId,
-      },
+    const reactions = await prisma.reaction.findMany({
+      where: { blogId },
+      include: { user: { select: { userName: true } } },
     });
+
     return res.status(200).json({
       success: true,
-      message: `sending all reactions for blogId : ${blogId}`,
+      message: `Sending all reactions for blogId ${blogId}`,
+      data: reactions,
     });
   } catch (err) {
     next(err);
@@ -55,38 +63,39 @@ export async function updateReaction(
   const { reactionId, reactionType } = req.validationData;
   try {
     const existingReaction = await prisma.reaction.findUniqueOrThrow({
-      where: {
-        id: reactionId,
-      },
+      where: { id: reactionId },
     });
 
     const isAllowed = await verifyOwnership(req.user!, existingReaction);
-    if (isAllowed) {
-      const updatedreaction = await prisma.reaction.update({
-        where: {
-          id: reactionId,
-        },
-        data: {
-          type: reactionType,
-        },
-      });
-      return res.status(200).json({
-        success: true,
-        message: `updated reaction with reactionId ${reactionId}`,
-        data: updatedreaction,
-      });
-    } else {
-      return res.status(401).json({
+    if (!isAllowed) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const updatedReaction = await prisma.reaction.update({
+      where: { id: reactionId },
+      data: { type: reactionType },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Updated reaction with id ${reactionId}`,
+      data: updatedReaction,
+    });
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      return res.status(404).json({
         success: false,
-        message: "Unauthorized",
+        message: `Reaction with id ${reactionId} not found`,
       });
     }
-  } catch (err) {
     next(err);
   }
 }
 
-export async function deleteReactiong(
+export async function deleteReaction(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -94,29 +103,31 @@ export async function deleteReactiong(
   const { reactionId } = req.validationData;
   try {
     const existingReaction = await prisma.reaction.findUniqueOrThrow({
-      where: {
-        id: reactionId,
-      },
+      where: { id: reactionId },
     });
+
     const isAllowed = await verifyOwnership(req.user!, existingReaction);
-    if (isAllowed) {
-      await prisma.reaction.delete({
-        where: {
-          id: reactionId,
-        },
-      });
-      return res.status(200).json({
-        success: true,
-        message: `deleted reactiong with reactionId ${reactionId}`,
-        data: existingReaction,
-      });
-    } else {
-      return res.status(401).json({
+    if (!isAllowed) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    await prisma.reaction.delete({ where: { id: reactionId } });
+
+    return res.status(200).json({
+      success: true,
+      message: `Deleted reaction with id ${reactionId}`,
+      data: existingReaction,
+    });
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      return res.status(404).json({
         success: false,
-        message: "Unauthorized",
+        message: `Reaction with id ${reactionId} not found`,
       });
     }
-  } catch (err) {
     next(err);
   }
 }
