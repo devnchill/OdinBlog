@@ -16,13 +16,8 @@ export async function loginUser(
         success: false,
         message: "invalid body",
       });
-    const user = await prisma.user.findFirst({ where: { userName } });
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: `user with username ${userName} does not exists`,
-      });
-    }
+    const user = await prisma.user.findFirstOrThrow({ where: { userName } });
+
     const match = await bcrypt.compare(password, user.hashedPassword);
     if (!match) {
       return res.status(404).json({

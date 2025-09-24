@@ -63,17 +63,11 @@ export async function deleteComment(
         id: blogId,
       },
     });
-    const comment = await prisma.comment.findUnique({
+    const comment = await prisma.comment.findUniqueOrThrow({
       where: {
         id: commentId,
       },
     });
-    if (!comment) {
-      return res.status(404).json({
-        success: false,
-        message: "comment not found",
-      });
-    }
     const isAllowed = await verifyOwnership(req.user!, comment);
     if (isAllowed) {
       await prisma.comment.delete({
@@ -105,17 +99,11 @@ export async function updateComment(
 ) {
   const { commentId, text } = req.validationData;
   try {
-    const existingComment = await prisma.comment.findUnique({
+    const existingComment = await prisma.comment.findUniqueOrThrow({
       where: {
         id: commentId,
       },
     });
-    if (!existingComment) {
-      return res.status(404).json({
-        success: false,
-        message: "comment not found",
-      });
-    }
     const isAllowed = await verifyOwnership(req.user!, existingComment);
     if (isAllowed) {
       const updatedComment = await prisma.comment.update({

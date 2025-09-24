@@ -29,16 +29,11 @@ export async function getAllBlogs(
 export async function getBlog(req: Request, res: Response, next: NextFunction) {
   const { blogId } = req.validationData;
   try {
-    const blog = await prisma.blog.findUnique({
+    const blog = await prisma.blog.findUniqueOrThrow({
       where: {
         id: blogId,
       },
     });
-    if (!blog) {
-      return res
-        .status(404)
-        .json({ success: false, message: `Blog ${blogId} not found` });
-    }
 
     return res.status(200).json({
       success: true,
@@ -83,17 +78,11 @@ export async function deleteBlog(
 ) {
   const { blogId } = req.validationData;
   try {
-    const blog = await prisma.blog.findUnique({
+    const blog = await prisma.blog.findUniqueOrThrow({
       where: {
         id: blogId,
       },
     });
-    if (!blog) {
-      return res.status(404).json({
-        success: false,
-        message: "Blog not found",
-      });
-    }
     const isAllowed = await verifyOwnership(req.user!, blog);
     if (isAllowed) {
       await prisma.blog.delete({
@@ -126,17 +115,11 @@ export async function editBlog(
   const { blogId, title, content, isPublished } = req.validationData;
 
   try {
-    const blog = await prisma.blog.findUnique({
+    const blog = await prisma.blog.findUniqueOrThrow({
       where: {
         id: blogId,
       },
     });
-    if (!blog) {
-      return res.status(404).json({
-        success: false,
-        message: "Blog not found",
-      });
-    }
     const isAllowed = await verifyOwnership(req.user!, blog);
     if (isAllowed) {
       const updatedBLog = await prisma.blog.update({

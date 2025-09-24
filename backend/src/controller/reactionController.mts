@@ -54,17 +54,12 @@ export async function updateReaction(
 ) {
   const { reactionId, reactionType } = req.validationData;
   try {
-    const existingReaction = await prisma.reaction.findUnique({
+    const existingReaction = await prisma.reaction.findUniqueOrThrow({
       where: {
         id: reactionId,
       },
     });
-    if (!existingReaction) {
-      return res.status(404).json({
-        success: false,
-        message: "reaction not found",
-      });
-    }
+
     const isAllowed = await verifyOwnership(req.user!, existingReaction);
     if (isAllowed) {
       const updatedreaction = await prisma.reaction.update({
@@ -98,17 +93,11 @@ export async function deleteReactiong(
 ) {
   const { reactionId } = req.validationData;
   try {
-    const existingReaction = await prisma.reaction.findUnique({
+    const existingReaction = await prisma.reaction.findUniqueOrThrow({
       where: {
         id: reactionId,
       },
     });
-    if (!existingReaction) {
-      return res.status(404).json({
-        success: false,
-        message: "reactiong not found",
-      });
-    }
     const isAllowed = await verifyOwnership(req.user!, existingReaction);
     if (isAllowed) {
       await prisma.reaction.delete({
