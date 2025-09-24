@@ -6,7 +6,7 @@ import {
   getAllCommentsOfABlog,
   updateComment,
 } from "../controller/commentController.mjs";
-import validateFields from "../util/validateFields.mjs";
+import validateFields from "../middleware/validateFields.mjs";
 import {
   blogIdSchema,
   commentIdSchema,

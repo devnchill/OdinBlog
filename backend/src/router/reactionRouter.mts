@@ -2,11 +2,11 @@ import { Router } from "express";
 import { verifyJwt } from "../middleware/verifyToken.mjs";
 import {
   createReaction,
-  deleteReactiong,
-  getAllReaction,
+  deleteReaction,
+  getAllReactions,
   updateReaction,
 } from "../controller/reactionController.mjs";
-import validateFields from "../util/validateFields.mjs";
+import validateFields from "../middleware/validateFields.mjs";
 import {
   blogIdSchema,
   idSchema,
@@ -24,7 +24,7 @@ reactionRouter.get(
       source: "params",
     },
   ]),
-  getAllReaction,
+  getAllReactions,
 );
 
 reactionRouter.use(
@@ -73,7 +73,7 @@ reactionRouter.delete(
       source: "params",
     },
   ]),
-  deleteReactiong,
+  deleteReaction,
 );
 
 export default reactionRouter;
