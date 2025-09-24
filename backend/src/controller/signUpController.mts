@@ -9,15 +9,9 @@ export async function createUser(
 ) {
   try {
     const { userName, password } = req.body;
-    const hasUserName = await prisma.user.findFirst({
+    await prisma.user.findUniqueOrThrow({
       where: { userName },
     });
-
-    if (hasUserName)
-      return res.status(409).json({
-        success: false,
-        message: "Username already in use",
-      });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
