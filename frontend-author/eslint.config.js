@@ -22,6 +22,7 @@ export default tseslint.config([
     languageOptions: {
       parserOptions: {
         tsconfigRootDir: __dirname,
+        project: ["./tsconfig.app.json", "./tsconfig.node.json"],
       },
       ecmaVersion: 2020,
       globals: globals.browser,
