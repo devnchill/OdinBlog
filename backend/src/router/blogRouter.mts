@@ -11,7 +11,7 @@ import verifyRole from "../middleware/verifyRole.mjs";
 import { Role } from "../generated/prisma/enums.js";
 import commentRouter from "./commentRouter.mjs";
 import reactionRouter from "./reactionRouter.mjs";
-import validateFields from "../util/validateFields.mjs";
+import validateFields from "../middleware/validateFields.mjs";
 import { idSchema, blogBodySchema, blogIdSchema } from "@odinblog/common";
 
 const blogRouter = Router();
