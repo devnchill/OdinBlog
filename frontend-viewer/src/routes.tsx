@@ -1,20 +1,26 @@
 import { createBrowserRouter } from "react-router";
-import SignUpScreen from "./pages/SignUpScreen";
-import LoginScreen from "./pages/LoginScreen";
-import HomeScreen from "./pages/HomeScreen";
+import SignUpPage from "./pages/SignUpPage";
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import { LayoutPage } from "./pages/LayoutPage";
+import ContactPage from "./pages/ContactPage";
+import BlogPage from "./pages/BlogPage";
+import ErrorPage from "./pages/ErrorPage";
 
 const router = createBrowserRouter([
   {
-    path: "/signup",
-    element: <SignUpScreen />,
-  },
-  {
-    path: "/login",
-    element: <LoginScreen />,
-  },
-  {
     path: "/",
-    element: <HomeScreen />,
+    element: <LayoutPage />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "/blog", element: <BlogPage /> },
+      { path: "/about", element: <AboutPage /> },
+      { path: "/contact", element: <ContactPage /> },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/signup", element: <SignUpPage /> },
+    ],
+    errorElement: <ErrorPage />,
   },
 ]);
 
