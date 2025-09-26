@@ -1,13 +1,13 @@
 import { Link } from "react-router";
 import Button from "./Button";
 import { useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const NavBar = () => {
   const isLoggedIn = useContext(AuthContext);
 
   return (
-    <nav className="h-14 bg-linear-65 from-purple-500 to-pink-500 flex justify-around font-[Roboto]">
+    <nav className="h-14 flex justify-around font-[Roboto]">
       <div className="flex  gap-8 items-center text-xl">
         <Link
           to={{

@@ -3,7 +3,7 @@ interface IButtonProp {
 }
 
 const Button = ({ text }: IButtonProp) => {
-  return <button className="text-xl">{text}</button>;
+  return <button className="text-xl font-['Roboto'] ">{text}</button>;
 };
 
 export default Button;
