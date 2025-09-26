@@ -3,7 +3,7 @@ import { Link } from "react-router";
 const FooterNav = () => {
   return (
     <div>
-      <p>Navigation</p>
+      <p className="text-xl">Navigation</p>
       <nav className="flex flex-col p-2">
         <Link to={"/"}>Home</Link>
         <Link to={"/about"}>About</Link>

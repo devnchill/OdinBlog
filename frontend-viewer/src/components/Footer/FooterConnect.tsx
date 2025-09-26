@@ -1,35 +1,19 @@
 import { FaGithub } from "react-icons/fa";
 import { SiLeetcode } from "react-icons/si";
 import { FaYoutube } from "react-icons/fa";
+import FooterIcons from "./FooterIcons";
 
 const FooterConnect = () => {
   return (
-    <div>
-      <div className="">Connect</div>
-      <div className="flex gap-2">
-        <a
-          href="https://github.com/devnchill"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FaGithub />
-        </a>
-
-        <a
-          href="https://leetcode.com/0xviena"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <SiLeetcode />
-        </a>
-
-        <a
-          href="https://www.youtube.com/@mid3ee"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FaYoutube />
-        </a>
+    <div className="flex flex-col items-center gap-3 ">
+      <p className="text-xl">Connect</p>
+      <div className="flex gap-3">
+        <FooterIcons icon={FaGithub} href="https://github.com/devnchill" />
+        <FooterIcons icon={SiLeetcode} href="https://leetcode.com/0xviena" />
+        <FooterIcons
+          icon={FaYoutube}
+          href="https://www.youtube.com/@devnchill"
+        />
       </div>
     </div>
   );

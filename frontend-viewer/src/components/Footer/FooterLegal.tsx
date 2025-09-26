@@ -3,7 +3,7 @@ import { Link } from "react-router";
 const FooterLegal = () => {
   return (
     <div>
-      <p>Legal</p>
+      <p className="text-xl">Legal</p>
       <div className="flex-col flex p-2">
         <Link to={"/privacy-policy"}>Privacy Policy</Link>
         <Link to={"terms-of-service"}>Terms of Service</Link>
