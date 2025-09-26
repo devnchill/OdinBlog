@@ -1,6 +1,11 @@
 import { Link } from "react-router";
+import Button from "./Button";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 
 const NavBar = () => {
+  const isLoggedIn = useContext(AuthContext);
+
   return (
     <nav className="h-14 bg-linear-65 from-purple-500 to-pink-500 flex justify-around font-[Roboto]">
       <div className="flex  gap-8 items-center text-xl">
@@ -9,21 +14,21 @@ const NavBar = () => {
             pathname: "/",
           }}
         >
-          Blogs
+          <Button text="Home" />
         </Link>
         <Link
           to={{
             pathname: "/about",
           }}
         >
-          About
+          <Button text="About" />
         </Link>
         <Link
           to={{
             pathname: "/contact",
           }}
         >
-          Contact
+          <Button text="Contact" />
         </Link>
       </div>
       <div className="flex  gap-8 items-center text-xl">
@@ -32,22 +37,34 @@ const NavBar = () => {
             pathname: "/theme",
           }}
         >
-          Theme
+          <Button text="Theme" />
         </Link>
-        <Link
-          to={{
-            pathname: "/login",
-          }}
-        >
-          Login
-        </Link>
-        <Link
-          to={{
-            pathname: "/signup",
-          }}
-        >
-          SignUp
-        </Link>
+        {isLoggedIn ? (
+          <Link
+            to={{
+              pathname: "/logout",
+            }}
+          >
+            <Button text="Logout" />
+          </Link>
+        ) : (
+          <>
+            <Link
+              to={{
+                pathname: "/login",
+              }}
+            >
+              <Button text="Login" />
+            </Link>
+            <Link
+              to={{
+                pathname: "/signup",
+              }}
+            >
+              <Button text="SignUp" />
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );
