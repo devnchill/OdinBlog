@@ -1,70 +1,38 @@
 import { Link } from "react-router";
-import Button from "./Button";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
 
 const NavBar = () => {
-  const isLoggedIn = useContext(AuthContext);
-
   return (
-    <nav className="h-14 flex justify-around font-[Roboto]">
-      <div className="flex  gap-8 items-center text-xl">
-        <Link
-          to={{
-            pathname: "/",
-          }}
-        >
-          <Button text="Home" />
-        </Link>
-        <Link
-          to={{
-            pathname: "/about",
-          }}
-        >
-          <Button text="About" />
-        </Link>
-        <Link
-          to={{
-            pathname: "/contact",
-          }}
-        >
-          <Button text="Contact" />
+    <nav className="flex justify-between items-center p-4">
+      <div>
+        <Link to="/" className="text-2xl font-bold text-[var(--color-primary)]">
+          Chill Times
         </Link>
       </div>
-      <div className="flex  gap-8 items-center text-xl">
+      <div className="flex gap-6">
         <Link
-          to={{
-            pathname: "/theme",
-          }}
+          to="/"
+          className="text-[var(--color-surface)] transition-colors hover:text-[var(--color-primary-glow)]"
         >
-          <Button text="Theme" />
+          Home
         </Link>
-        {isLoggedIn ? (
-          <Link
-            to={{
-              pathname: "/logout",
-            }}
-          >
-            <Button text="Logout" />
-          </Link>
-        ) : (
-          <>
-            <Link
-              to={{
-                pathname: "/login",
-              }}
-            >
-              <Button text="Login" />
-            </Link>
-            <Link
-              to={{
-                pathname: "/signup",
-              }}
-            >
-              <Button text="SignUp" />
-            </Link>
-          </>
-        )}
+        <Link
+          to="/about"
+          className="text-[var(--color-surface)] transition-colors hover:text-[var(--color-primary-glow)]"
+        >
+          About
+        </Link>
+        <Link
+          to="/blog"
+          className="text-[var(--color-surface)] transition-colors hover:text-[var(--color-primary-glow)]"
+        >
+          Blog
+        </Link>
+        <Link
+          to="/contact"
+          className="text-[var(--color-surface)] transition-colors hover:text-[var(--color-primary-glow)]"
+        >
+          Contact
+        </Link>
       </div>
     </nav>
   );
