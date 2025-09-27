@@ -5,8 +5,10 @@ import FooterIcons from "./FooterIcons";
 
 const FooterConnect = () => {
   return (
-    <div className="flex flex-col items-center gap-3 ">
-      <p className="text-xl">Connect</p>
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-xl font-semibold text-[var(--color-surface)] mb-2">
+        Connect
+      </p>
       <div className="flex gap-3">
         <FooterIcons icon={FaGithub} href="https://github.com/devnchill" />
         <FooterIcons icon={SiLeetcode} href="https://leetcode.com/0xviena" />

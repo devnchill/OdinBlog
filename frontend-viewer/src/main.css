@@ -15,4 +15,18 @@
   --color-border: #3c3e42;
   --color-danger: #7c393d;
   --color-danger-light: #e06e7a;
+  --color-primary-glow: #ff6b7c;
+}
+
+*,
+*:before,
+*:after {
+  @apply cursor-default;
+  cursor:
+    url("/arrowhead.svg") 0 0,
+    auto;
+}
+
+* {
+  font-family: "Roboto";
 }
