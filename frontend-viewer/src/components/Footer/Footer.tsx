@@ -1,5 +1,5 @@
+import FooterConnect from "./connect/FooterConnect";
 import FooterAbout from "./FooterAbout";
-import FooterConnect from "./FooterConnect";
 import FooterLegal from "./FooterLegal";
 import FooterNav from "./FooterNav";
 
