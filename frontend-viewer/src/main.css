@@ -8,23 +8,17 @@
 }
 
 :root {
-  --color-primary: #f4515e;
-  --color-background: #17191b;
+  --color-background: #17191a;
   --color-surface: #e6e8eb;
-  --color-muted: #7a7c81;
   --color-border: #3c3e42;
+  --color-muted: #7a7c81;
+  --color-stone-cold: #555759;
+  --color-primary: #f4515e;
+  --color-primary-glow: #ff6b7c;
   --color-danger: #7c393d;
   --color-danger-light: #e06e7a;
-  --color-primary-glow: #ff6b7c;
-}
-
-*,
-*:before,
-*:after {
-  @apply cursor-default;
-  cursor:
-    url("/arrowhead.svg") 0 0,
-    auto;
+  --color-black-pearl: #22262b;
+  --color-carbon: #333435;
 }
 
 * {

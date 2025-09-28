@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import FooterLink from "./FooterLink";
 
 const FooterNav = () => {
   return (
@@ -7,30 +7,10 @@ const FooterNav = () => {
         Navigation
       </p>
       <nav className="flex flex-col gap-1 px-2">
-        <Link
-          to="/"
-          className="text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-glow)]"
-        >
-          Home
-        </Link>
-        <Link
-          to="/about"
-          className="text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-glow)]"
-        >
-          About
-        </Link>
-        <Link
-          to="/blog"
-          className="text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-glow)]"
-        >
-          Blog
-        </Link>
-        <Link
-          to="/contact"
-          className="text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-glow)]"
-        >
-          Contact
-        </Link>
+        <FooterLink to="/">Home</FooterLink>
+        <FooterLink to="/blog"> Blog</FooterLink>
+        <FooterLink to="/about"> About</FooterLink>
+        <FooterLink to="/contact"> Contact</FooterLink>
       </nav>
     </div>
   );
