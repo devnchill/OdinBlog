@@ -10,7 +10,7 @@ const NavBar = () => {
         </Link>
       </div>
       <div className="flex gap-6">
-        <NavBtnLink to="/home" text="Home" />
+        <NavBtnLink to="/" text="Home" />
         <NavBtnLink to="/blog" text="Blog" />
         <NavBtnLink to="/about" text="About" />
         <NavBtnLink to="/contact" text="Contact" />
