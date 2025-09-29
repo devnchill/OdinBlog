@@ -17,7 +17,7 @@ import { idSchema, blogBodySchema, blogIdSchema } from "@odinblog/common";
 const blogRouter = Router();
 
 // ----- guest (no account) -----
-blogRouter.get("/", getAllBlogs);
+blogRouter.get("/all", getAllBlogs);
 blogRouter.get(
   "/:blogId",
   validateFields([{ schema: blogIdSchema, source: "params" }]),

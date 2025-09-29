@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/v1/signup", signUpRouter);
 app.use("/v1/login", loginRouter);
-app.use("/v1/", blogRouter);
+app.use("/v1/blog", blogRouter);
 
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.log(err);
