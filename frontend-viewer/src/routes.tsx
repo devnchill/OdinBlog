@@ -3,15 +3,15 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
-import { LayoutPage } from "./components/Layout";
 import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/BlogPage";
 import ErrorPage from "./pages/ErrorPage";
+import { Layout } from "./components/Layout";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LayoutPage />,
+    element: <Layout />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "/blog", element: <BlogPage /> },
