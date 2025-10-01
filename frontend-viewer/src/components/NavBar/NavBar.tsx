@@ -4,11 +4,14 @@ import NavBtnLink from "./NavBtnLink";
 const NavBar = () => {
   return (
     <nav className="flex justify-between items-center p-4">
-      <div>
-        <Link to="/" className="text-2xl font-bold text-[var(--color-primary)]">
+      <h1>
+        <Link
+          to="/"
+          className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-[var(--color-primary)]"
+        >
           Chill Times
         </Link>
-      </div>
+      </h1>
       <div className="flex gap-6">
         <NavBtnLink to="/" text="Home" />
         <NavBtnLink to="/blog" text="Blog" />
