@@ -1,43 +1,33 @@
-import { useEffect, useState } from "react";
-import BlogCard from "../components/Blogs/BlogCard";
-
-interface IBlogResponse {
-  data: IBlog[];
-  success: boolean;
-  message: string;
-}
-
-export interface IBlog {
-  title: string;
-  content: string;
-  createdAt: string;
-  author: {
-    userName: string;
-  };
-}
+import { Link } from "react-router";
 
 const HomePage = () => {
-  const [blogResponse, setBlogResponse] = useState<IBlogResponse | null>(null);
-  const [isLoading, setisLoading] = useState<boolean>(true);
-  useEffect(() => {
-    fetch("/api/blog/all")
-      .then((res) => res.json())
-      .catch((e) => console.error(e))
-      .then((data) => setBlogResponse(data))
-      .finally(() => setisLoading(false));
-  }, []);
-  console.log(blogResponse);
-
-  if (isLoading) return <main>Loading...</main>;
-  if (!blogResponse?.success) {
-    return <main>Error loading blogs.{blogResponse?.message}</main>;
-  }
   return (
-    <main className="grid gap-6 p-8 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] [grid-auto-rows:300px]">
-      {blogResponse?.data.map((blog) => (
-        <BlogCard blog={blog} />
-      ))}
+    <main className="flex flex-wrap justify-center items-center gap-24 md:gap-10 py-10 px-4">
+      <section className="text-center md:text-left">
+        <h2 className="text-2xl my-2 font-bold md:text-4xl text-[var(--color-stone-cold)]">
+          Welcome to your{" "}
+          <span className="text-[var(--color-primary)] font-normal">
+            blogging{" "}
+          </span>
+          space.
+        </h2>
+        <p className="text-lg md:text-xl text-[var(--color-carbon)] italic">
+          A place to share your thoughts and discover new ideas.
+        </p>
+
+        <Link
+          to="/blog"
+          className="mt-6 inline-block bg-[var(--color-black-pearl)] text-[var(--color-surface)] px-6 py-3 rounded-lg hover:bg-[var(--color-carbon)] transition-colors font-bold"
+        >
+          Explore Blogs
+        </Link>
+      </section>
+
+      <section id="image">
+        <img src="/homepage.png" alt="homepage image" />
+      </section>
     </main>
   );
 };
+
 export default HomePage;
