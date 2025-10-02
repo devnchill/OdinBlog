@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import type { IBlog } from "../../pages/BlogPage.tsx";
+import { FaComment } from "react-icons/fa";
 
 interface IBlogCardProps {
   blog: IBlog;
@@ -7,25 +8,30 @@ interface IBlogCardProps {
 
 const BlogCard = ({ blog }: IBlogCardProps) => {
   return (
-    <div className="border rounded-xl border-[var(--color-border)] bg-[var(--color-darkish)] grid grid-rows-[20%_1fr_10%] p-4 gap-2 md:gap-5">
-      <Link
-        to={`/blog/${blog.id}`}
-        className="text-lg md:text-2xl text-center font-semibold text-[var(--color-carbon)] truncate bg-[var(--color-primary)] rounded-xl p-3"
-      >
+    <Link
+      to={`/blog/${blog.id}`}
+      className="border rounded-xl border-[var(--color-border)] bg-[var(--color-darkish)] grid grid-rows-[auto_auto_auto] p-4 gap-2 md:gap-5"
+    >
+      <h2 className="text-lg md:text-2xl text-center font-semibold text-[var(--color-carbon)] truncate bg-[var(--color-primary)] rounded-xl p-3">
         {blog.title}
-      </Link>
-      <p className="text-[var(--color-muted)] overflow-ellipsis px-2">
-        {blog.content}
-      </p>
+      </h2>
+      <p className="text-[var(--color-muted)] truncate px-2 ">{blog.content}</p>
       <div className="flex justify-between items-center">
-        <p className="text-[var(--color-stone-cold)] italic">
-          {blog.createdAt}
+        <p>
+          <span className="mx-4 text-[var(--color-carbon)]">on</span>
+          <span className="italic text-[var(--color-stone-cold)]">
+            {blog.createdAt}{" "}
+          </span>
+          <span className="mx-4 text-[var(--color-carbon)]">by</span>
+          <span className="text-[var(--color-primary)] font-bold">
+            {blog.author.userName}{" "}
+          </span>
         </p>
-        <p className="text-[var(--color-primary)] font-semibold">
-          {blog.author.userName}
-        </p>
+        <span className="text-[var(--color-stone-cold)]">
+          <FaComment className="inline" /> {blog._count.Comment}{" "}
+        </span>
       </div>
-    </div>
+    </Link>
   );
 };
 

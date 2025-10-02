@@ -24,6 +24,11 @@ export async function getAllBlogs(
             userName: true,
           },
         },
+        _count: {
+          select: {
+            Comment: true,
+          },
+        },
       },
     });
 
@@ -54,6 +59,30 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
         author: {
           select: {
             userName: true,
+          },
+        },
+        Comment: {
+          select: {
+            user: {
+              select: {
+                userName: true,
+              },
+            },
+            text: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        Reaction: {
+          select: {
+            user: {
+              select: {
+                userName: true,
+              },
+            },
+            type: true,
+            createdAt: true,
+            updatedAt: true,
           },
         },
       },

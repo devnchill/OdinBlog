@@ -15,6 +15,9 @@ export interface IBlog {
   author: {
     userName: string;
   };
+  _count: {
+    Comment: number;
+  };
 }
 
 const BlogPage = () => {
@@ -37,8 +40,10 @@ const BlogPage = () => {
   if (!blogResponse?.success) {
     return <main>Error loading blogs.{blogResponse?.message}</main>;
   }
+  console.log(blogResponse.data);
+
   return (
-    <main className="grid gap-6 p-8 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] [grid-auto-rows:300px]">
+    <main className="grid gap-6 p-8 auto-rows-min">
       {blogResponse?.data.map((blog) => (
         <BlogCard blog={blog} key={blog.id} />
       ))}
