@@ -14,7 +14,9 @@ export default function validateFields(schemas: SchemaWithSource[]) {
     res: Response,
     next: NextFunction,
   ) => {
-    req.validationData = {};
+    console.log(req.user);
+
+    req.validationData = req.validationData || {};
     for (const { schema, source } of schemas) {
       const input = req[source];
       const result = schema.safeParse(input);
@@ -28,6 +30,7 @@ export default function validateFields(schemas: SchemaWithSource[]) {
         return res.status(400).json({
           success: false,
           message: errors,
+          foo: "hello",
         });
       }
       Object.assign(req.validationData, result.data);

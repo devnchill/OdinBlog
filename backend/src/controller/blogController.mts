@@ -83,6 +83,8 @@ export async function createBlog(
   next: NextFunction,
 ) {
   const { id, title, content, isPublished } = req.validationData;
+  console.log("id while creating blog is", id);
+
   try {
     const blog = await prisma.blog.create({
       data: {

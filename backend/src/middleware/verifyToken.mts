@@ -17,6 +17,7 @@ export async function verifyJwt(
       token,
       process.env.SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
     ) as TUserOnReq;
+    console.log(decoded);
     req.user = decoded;
     next();
   } catch (err) {
