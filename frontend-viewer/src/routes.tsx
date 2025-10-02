@@ -7,6 +7,7 @@ import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/BlogPage";
 import ErrorPage from "./pages/ErrorPage";
 import { Layout } from "./components/Layout";
+import BlogDetailPage from "./pages/BlogDetailPage";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "/blog", element: <BlogPage /> },
+      { path: "/blog/:blogId", element: <BlogDetailPage /> },
       { path: "/about", element: <AboutPage /> },
       { path: "/contact", element: <ContactPage /> },
       { path: "/signup", element: <SignUpPage /> },
