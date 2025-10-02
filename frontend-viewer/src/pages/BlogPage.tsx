@@ -8,6 +8,7 @@ interface IBlogResponse {
 }
 
 export interface IBlog {
+  id: number;
   title: string;
   content: string;
   createdAt: string;
@@ -26,16 +27,20 @@ const BlogPage = () => {
       .then((data) => setBlogResponse(data))
       .finally(() => setisLoading(false));
   }, []);
-  console.log(blogResponse);
 
-  if (isLoading) return <main>Loading...</main>;
+  if (isLoading)
+    return (
+      <main className="text-center text-[var(--color-primary-glow)]">
+        Loading...
+      </main>
+    );
   if (!blogResponse?.success) {
     return <main>Error loading blogs.{blogResponse?.message}</main>;
   }
   return (
     <main className="grid gap-6 p-8 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] [grid-auto-rows:300px]">
       {blogResponse?.data.map((blog) => (
-        <BlogCard blog={blog} />
+        <BlogCard blog={blog} key={blog.id} />
       ))}
     </main>
   );

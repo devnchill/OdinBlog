@@ -15,6 +15,7 @@ export async function getAllBlogs(
         isPublished: true,
       },
       select: {
+        id: true,
         title: true,
         content: true,
         createdAt: true,
@@ -42,8 +43,10 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
     const blog = await prisma.blog.findUniqueOrThrow({
       where: {
         id: blogId,
+        isPublished: true,
       },
       select: {
+        id: true,
         title: true,
         content: true,
         createdAt: true,
