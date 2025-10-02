@@ -5,5 +5,5 @@ export const reactionSchema = z.object({
   reactionType: z.enum(["LIKE", "DISLIKE"]),
 });
 export const reactionIdSchema = z.object({
-  reactionId: z.coerce.number(),
+  reactionId: z.coerce.string(),
 });

@@ -1,5 +1,5 @@
 import z from "zod";
 
 export const idSchema = z.object({
-  id: z.coerce.number(),
+  id: z.coerce.string(),
 });
