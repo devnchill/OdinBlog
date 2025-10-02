@@ -31,7 +31,7 @@ blogRouter.use("/:blogId/reactions", reactionRouter);
 // ----- blog CRUD {author(only the one owned by him)/admin(owned by anyone) only} -----
 blogRouter.use(
   verifyJwt,
-  validateFields([{ schema: idSchema, source: "params" }]),
+  validateFields([{ schema: idSchema, source: "user" }]),
   verifyRole(Role.AUTHOR),
 );
 

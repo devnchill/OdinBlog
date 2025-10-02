@@ -1,7 +1,48 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import FormField from "../components/FormField";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { useState } from "react";
+
+type TformInput = {
+  userName: string;
+  password: string;
+};
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TformInput>();
+
+  const [serverMessage, setServerMessage] = useState<string | null>(null);
+  const onSubmit: SubmitHandler<TformInput> = async (data) => {
+    const { userName, password } = data;
+    try {
+      const resLog = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userName, password }),
+      });
+
+      const responseLogin = await resLog.json();
+      console.log(responseLogin);
+
+      if (!responseLogin.success) {
+        setServerMessage(responseLogin.message);
+        return;
+      }
+      const { token } = responseLogin;
+      navigate("/");
+      localStorage.setItem("token", token);
+    } catch (err: unknown) {
+      console.log(err);
+      setServerMessage("Network error.please try after some time");
+    }
+  };
   return (
     <main className="flex justify-center items-center ">
       <div className="w-full md:w-80">
@@ -9,9 +50,49 @@ const LoginPage = () => {
           Log in
         </p>
         <div className="border-[var(--color-border)] border-2 rounded-xl p-4 bg-[var(--color-darkish)]">
-          <form className="flex flex-col gap-3">
-            <FormField text="Username" name="userName" type="text" />
-            <FormField text="Password" name="password" type="password" />
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-3"
+          >
+            <FormField
+              text="Username"
+              name="userName"
+              register={register}
+              type="text"
+              options={{
+                required: { value: true, message: "Username is required" },
+                minLength: {
+                  value: 2,
+                  message: "Username must be at least 2 characters",
+                },
+                maxLength: {
+                  value: 10,
+                  message: "Username cannot exceed 10 characters",
+                },
+              }}
+            />
+            {errors.userName && (
+              <span className="text-[var(--color-primary)] italic">
+                {errors.userName.message}
+              </span>
+            )}
+            <FormField
+              text="Password"
+              name="password"
+              register={register}
+              type="password"
+              options={{ required: true }}
+            />
+            {errors.password && (
+              <span className="text-[var(--color-primary)] italic">
+                {errors.password.message}
+              </span>
+            )}
+            {serverMessage && (
+              <span className="text-[var(--color-primary)] italic">
+                {serverMessage}
+              </span>
+            )}
             <button className="text-center my-4 text-[var(--color-muted)] bg-[var(--color-carbon)] p-1 border border-[var(--color-border)] rounded-md hover:bg-[var(--color-carbon)]">
               Log in
             </button>
