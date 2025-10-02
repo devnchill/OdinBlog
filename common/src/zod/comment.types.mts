@@ -4,5 +4,5 @@ export const commentSchema = z.object({
   text: z.coerce.string(),
 });
 export const commentIdSchema = z.object({
-  commentId: z.coerce.number(),
+  commentId: z.coerce.string(),
 });

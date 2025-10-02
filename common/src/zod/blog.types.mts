@@ -2,7 +2,7 @@ import { z } from "zod";
 
 //blogcontroller validation schemas
 export const blogIdSchema = z.object({
-  blogId: z.coerce.number(),
+  blogId: z.coerce.string(),
 });
 
 export const blogBodySchema = z.object({
