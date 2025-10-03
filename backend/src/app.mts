@@ -18,7 +18,6 @@ app.use("/v1/login", loginRouter);
 app.use("/v1/blog", blogRouter);
 
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-  console.log(err);
   return res.status(500).json({
     success: false,
     message: "internal server error",

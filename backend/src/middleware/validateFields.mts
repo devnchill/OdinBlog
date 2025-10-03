@@ -14,8 +14,6 @@ export default function validateFields(schemas: SchemaWithSource[]) {
     res: Response,
     next: NextFunction,
   ) => {
-    console.log(req.user);
-
     req.validationData = req.validationData || {};
     for (const { schema, source } of schemas) {
       const input = req[source];
