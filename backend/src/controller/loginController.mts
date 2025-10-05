@@ -16,11 +16,17 @@ export async function loginUser(
         success: false,
         message: "invalid body",
       });
-    const user = await prisma.user.findFirstOrThrow({ where: { userName } });
+    const user = await prisma.user.findFirst({ where: { userName } });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "invalid userName or password",
+      });
+    }
 
     const match = await bcrypt.compare(password, user.hashedPassword);
     if (!match) {
-      return res.status(404).json({
+      return res.status(401).json({
         success: false,
         message: `invalid username or password`,
       });
@@ -33,7 +39,6 @@ export async function loginUser(
     const token = jwt.sign(
       reqUser,
       process.env.SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
-      { expiresIn: "7d" },
     );
 
     return res.status(200).json({

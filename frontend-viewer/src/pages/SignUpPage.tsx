@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import FormField from "../components/FormField";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 type TformInput = {
   userName: string;
@@ -10,6 +11,8 @@ type TformInput = {
 };
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -18,7 +21,6 @@ const SignUpPage = () => {
   } = useForm<TformInput>();
 
   const [serverMessage, setServerMessage] = useState<string | null>(null);
-  const [isError, setIsError] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<TformInput> = async (data) => {
     const { userName, password, confirmPassword } = data;
@@ -30,7 +32,7 @@ const SignUpPage = () => {
       return;
     }
     try {
-      const res = await fetch("/api/signup", {
+      const resSignup = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,17 +40,30 @@ const SignUpPage = () => {
         body: JSON.stringify({ userName, password }),
       });
 
-      const response = await res.json();
-      if (!response.success) {
-        setIsError(true);
-      } else {
-        setIsError(false);
+      const responseSignup = await resSignup.json();
+      if (!responseSignup.success) {
+        setServerMessage(responseSignup.message);
+        return;
       }
-      setServerMessage(response.message);
-      console.log(response);
-    } catch (err: any) {
-      setServerMessage(err || "Network error.please try after some time");
-      setIsError(true);
+
+      const resLog = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userName, password }),
+      });
+      const responseLogin = await resLog.json();
+      if (!responseLogin.success) {
+        setServerMessage(responseLogin.message);
+        return;
+      }
+      const { token } = responseLogin;
+      navigate("/");
+      localStorage.setItem("token", token);
+    } catch (err: unknown) {
+      console.log(err);
+      setServerMessage("Network error.please try after some time");
     }
   };
 
@@ -118,13 +133,7 @@ const SignUpPage = () => {
               </span>
             )}
             {serverMessage && (
-              <span
-                className={
-                  isError
-                    ? "text-[var(--color-primary)] italic"
-                    : "text-green-400 italic"
-                }
-              >
+              <span className="text-[var(--color-primary)] italic">
                 {serverMessage}
               </span>
             )}
