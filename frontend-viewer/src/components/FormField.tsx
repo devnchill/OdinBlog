@@ -15,7 +15,7 @@ const FormField = ({ text, name, type, register, options }: IFormFieldProp) => {
         {text}:
       </label>
       <input
-        className="bg-[var(--color-carbon)] rounded-l border-2 block w-full border-[var(--color-border)] h-8"
+        className="bg-[var(--color-carbon)] rounded-l border-2 block w-full border-[var(--color-border)] h-8 text-[var(--color-surface)]"
         type={type}
         {...register(name, options)}
       />
