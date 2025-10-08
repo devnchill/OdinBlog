@@ -11,27 +11,27 @@ type TformInput = {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { setAccessToken, setRole } = useAuth();
+  const { saveAccessToken, saveRole } = useAuth();
+  const [serverMessage, setServerMessage] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<TformInput>();
 
-  const [serverMessage, setServerMessage] = useState<string | null>(null);
   const onSubmit: SubmitHandler<TformInput> = async (data) => {
     const { userName, password } = data;
     try {
-      const resLog = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userName, password }),
-      });
-
-      const responseLogin = await resLog.json();
-      console.log(responseLogin);
+      const responseLogin = await (
+        await fetch("/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userName, password }),
+        })
+      ).json();
 
       if (!responseLogin.success) {
         if (responseLogin.message === "Token expired") {
@@ -41,15 +41,17 @@ const LoginPage = () => {
           if (!getAccessTokenResponse.success) {
             setServerMessage(responseLogin.message);
           } else {
-            setAccessToken(getAccessTokenResponse.accessToken);
+            saveAccessToken(getAccessTokenResponse.accessToken);
+            saveRole(getAccessTokenResponse.role);
           }
         } else {
           setServerMessage(responseLogin.message);
-          return;
         }
+        navigate("/");
+        return;
       }
-      setAccessToken(responseLogin.accessToken);
-      setRole(responseLogin.role);
+      saveAccessToken(responseLogin.accessToken);
+      saveRole(responseLogin.role);
       navigate("/");
     } catch (err: unknown) {
       console.log(err);

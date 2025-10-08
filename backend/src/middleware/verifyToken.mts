@@ -19,10 +19,15 @@ export async function verifyJwt(
     ) as TUserOnReq;
     req.user = decoded;
     next();
-  } catch (err) {
-    if (err.name === "TokenExpiredError") {
+  } catch (err: unknown) {
+    if (err instanceof jwt.TokenExpiredError) {
       return res.status(401).json({ success: false, message: "Token expired" });
+    } else if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(403).json({ success: false, message: "Invalid token" });
+    } else {
+      return res
+        .status(500)
+        .json({ success: false, message: "Something went wrong" });
     }
-    return res.status(403).json({ success: false, message: "Invalid token" });
   }
 }
