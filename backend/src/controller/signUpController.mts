@@ -11,6 +11,8 @@ export async function createUser(
     const { userName, password, role, adminPassword } = req.body;
     console.log(role);
 
+    console.log(role);
+
     const existingUser = await prisma.user.findUnique({ where: { userName } });
     if (existingUser) {
       return res.status(400).json({

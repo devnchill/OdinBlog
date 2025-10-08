@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import type { IBlog } from "./BlogPage";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { parseDate } from "../util/parseDate.mts";
+import { useAuth } from "../hooks/useAuth";
 
 interface IBlogDetailResponse {
   data: IBlogDetail;
@@ -30,6 +31,8 @@ const BlogDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const blogId = slug?.split("---").pop();
   console.log("blogid", blogId);
+
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     fetch(`/api/blog/${blogId}`)
@@ -85,8 +88,11 @@ const BlogDetailPage = () => {
       </h4>
       <input
         type="text"
-        placeholder="Add a comment"
+        placeholder={
+          accessToken ? "Add a comment" : "You need to be logged in to comment"
+        }
         className="border-b-2 w-full border-[var(--color-border)] my-4"
+        disabled={!accessToken}
       />
       <div className="bg-[var(--color-carbon)]">
         {blogData?.Comment.map((com) => (

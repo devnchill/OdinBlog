@@ -8,6 +8,7 @@ export async function verifyJwt(
   next: NextFunction,
 ) {
   const token = req.headers.authorization?.split(" ")[1];
+  console.log(token);
   if (!token) {
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
@@ -15,11 +16,13 @@ export async function verifyJwt(
   try {
     const decoded = jwt.verify(
       token,
-      process.env.SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
+      process.env.ACCESS_TOKEN_SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
     ) as TUserOnReq;
     req.user = decoded;
     next();
   } catch (err: unknown) {
+    console.log(err);
+
     if (err instanceof jwt.TokenExpiredError) {
       return res.status(401).json({ success: false, message: "Token expired" });
     } else if (err instanceof jwt.JsonWebTokenError) {

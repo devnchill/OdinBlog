@@ -41,15 +41,20 @@ const LoginPage = () => {
           if (!getAccessTokenResponse.success) {
             setServerMessage(responseLogin.message);
           } else {
+            console.log(getAccessTokenResponse);
+
             saveAccessToken(getAccessTokenResponse.accessToken);
             saveRole(getAccessTokenResponse.role);
+            navigate("/");
+            return;
           }
         } else {
           setServerMessage(responseLogin.message);
+          return;
         }
-        navigate("/");
-        return;
       }
+      console.log(responseLogin);
+
       saveAccessToken(responseLogin.accessToken);
       saveRole(responseLogin.role);
       navigate("/");
