@@ -1,8 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import prisma from "../client/prismaClient.mjs";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import type { TUserOnReq } from "../types/express.mjs";
+import { generateTokens } from "../util/generateTokens.mjs";
 
 export async function loginUser(
   req: Request,
@@ -31,20 +30,21 @@ export async function loginUser(
         message: `invalid username or password`,
       });
     }
-    const reqUser: TUserOnReq = {
-      id: user.id,
-      userName: user.userName,
-    };
+    const { accessToken, refreshToken } = generateTokens(user);
 
-    const token = jwt.sign(
-      reqUser,
-      process.env.SECRET || "shhhhit'sasecretyeahdon'ttellanyone",
-    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     return res.status(200).json({
       message: "login successfull",
       success: true,
-      token,
+      accessToken,
+      role: user.role,
     });
   } catch (err) {
     next(err);

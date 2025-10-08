@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router";
 import FormField from "../components/FormField";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 type TformInput = {
   userName: string;
@@ -10,6 +11,7 @@ type TformInput = {
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { setAccessToken, setRole } = useAuth();
   const {
     register,
     handleSubmit,
@@ -32,12 +34,23 @@ const LoginPage = () => {
       console.log(responseLogin);
 
       if (!responseLogin.success) {
-        setServerMessage(responseLogin.message);
-        return;
+        if (responseLogin.message === "Token expired") {
+          const getAccessTokenResponse = await (
+            await fetch("/api/auth/refresh")
+          ).json();
+          if (!getAccessTokenResponse.success) {
+            setServerMessage(responseLogin.message);
+          } else {
+            setAccessToken(getAccessTokenResponse.accessToken);
+          }
+        } else {
+          setServerMessage(responseLogin.message);
+          return;
+        }
       }
-      const { token } = responseLogin;
+      setAccessToken(responseLogin.accessToken);
+      setRole(responseLogin.role);
       navigate("/");
-      localStorage.setItem("token", token);
     } catch (err: unknown) {
       console.log(err);
       setServerMessage("Network error.please try after some time");
