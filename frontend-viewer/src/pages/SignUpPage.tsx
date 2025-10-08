@@ -63,9 +63,7 @@ const SignUpPage = () => {
         setServerMessage(responseLogin.message);
         return;
       }
-      const { token } = responseLogin;
       navigate("/");
-      localStorage.setItem("token", token);
     } catch (err: unknown) {
       console.log(err);
       setServerMessage("Network error.please try after some time");

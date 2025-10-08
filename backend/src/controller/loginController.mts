@@ -37,13 +37,16 @@ export async function loginUser(
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
     return res.status(200).json({
       message: "login successfull",
       success: true,
-      accessToken,
       role: user.role,
     });
   } catch (err) {
