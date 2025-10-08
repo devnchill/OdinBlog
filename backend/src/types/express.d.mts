@@ -1,7 +1,7 @@
 import type { ZodSafeParseResult } from "zod";
 import { User } from "../generated/prisma/client.js";
 
-export type TUserOnReq = Pick<User, "id" | "userName">;
+export type TUserOnReq = Pick<User, "id" | "userName" | "role">;
 
 declare global {
   namespace Express {
