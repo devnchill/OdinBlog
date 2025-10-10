@@ -8,10 +8,10 @@ export async function createReaction(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId, reactionType, userId } = req.validationData;
+  const { blogId, reactionType, id } = req.validationData;
   try {
     const createdReaction = await prisma.reaction.create({
-      data: { userId, blogId, type: reactionType },
+      data: { userId: id, blogId, type: reactionType },
     });
 
     return res.status(201).json({

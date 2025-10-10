@@ -3,12 +3,25 @@ import NavBtnLink from "./NavBtnLink";
 import { useAuth } from "../../hooks/useAuth";
 
 const NavBar = () => {
-  const { accessToken } = useAuth();
-  const { saveRole, saveAccessToken } = useAuth();
-  const signOut = () => {
-    saveRole("");
-    saveAccessToken("");
+  const { role, saveRole } = useAuth();
+  const signOut = async () => {
+    try {
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      const json = await response.json();
+
+      if (json.success) {
+        saveRole("");
+      } else {
+        console.error("Logout failed:", json.message);
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
   };
+
   return (
     <nav className="flex justify-between items-center p-4">
       <h1>
@@ -24,7 +37,7 @@ const NavBar = () => {
         <NavBtnLink to="/blog" text="Blog" />
         <NavBtnLink to="/about" text="About" />
         <NavBtnLink to="/contact" text="Contact" />
-        {accessToken ? (
+        {role ? (
           <button onClick={signOut}>Signout</button>
         ) : (
           <>
