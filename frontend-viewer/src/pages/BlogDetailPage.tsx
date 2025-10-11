@@ -1,31 +1,37 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import type { IBlog } from "./BlogPage";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { parseDate } from "../util/parseDate.mts";
 import { useAuth } from "../hooks/useAuth";
 import { deleteReaction, reactBlog } from "../api/reaction";
+import { handleAddComment } from "../api/comment";
 
 interface IBlogDetailResponse {
   data: IBlogDetail;
 }
 
+type TComment = {
+  userName: string;
+  text: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type TReaction = {
+  userName: string;
+  type: "LIKE" | "DISLIKE";
+  createdAt: string;
+  updatedAt: string;
+};
+
 interface IBlogDetail extends IBlog {
-  Comment: {
-    userName: string;
-    text: string;
-    createdAt: string;
-    updatedAt: string;
-  }[];
-  Reaction: {
-    userName: string;
-    type: "LIKE" | "DISLIKE";
-    createdAt: string;
-    updatedAt: string;
-  }[];
+  Comment: TComment[];
+  Reaction: TReaction[];
 }
 
 const BlogDetailPage = () => {
+  const navigate = useNavigate();
   const [blogDetailResponse, setBlogDetailResponse] =
     useState<IBlogDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +39,10 @@ const BlogDetailPage = () => {
   const [reactionType, setReactionType] = useState<"LIKE" | "DISLIKE" | null>(
     null,
   );
+  const [comments, setComments] = useState<TComment[] | null>(null);
+  const [likeCount, setLikeCount] = useState(0);
+  const [dislikeCount, setDislikeCount] = useState(0);
+  const [newComment, setNewComment] = useState<string>("");
   const { slug } = useParams<{ slug: string }>();
   const blogId = slug?.split("---").pop();
   console.log("blogid", blogId);
@@ -43,54 +53,79 @@ const BlogDetailPage = () => {
     fetch(`/api/blog/${blogId}`)
       .then((res) => res.json())
       .catch((e) => console.log(e))
-      .then((data) => setBlogDetailResponse(data))
+      .then((data: IBlogDetailResponse) => {
+        setBlogDetailResponse(data);
+        const likeCount = data.data?.Reaction.filter(
+          (r: TReaction) => r.type === "LIKE",
+        ).length;
+        const dislikeCount = data.data?.Reaction.filter(
+          (r: TReaction) => r.type === "DISLIKE",
+        ).length;
+        setComments(data.data.Comment);
+        setLikeCount(likeCount);
+        setDislikeCount(dislikeCount);
+      })
       .finally(() => {
         setIsLoading(false);
       });
   }, [blogId]);
+
   if (blogDetailResponse) {
     console.log(blogDetailResponse);
   }
   if (isLoading) return <div>Loading...</div>;
-  const blogData = blogDetailResponse?.data;
-  let likeCount = 0,
-    dislikeCount = 0;
-  blogData?.Reaction.forEach((r) => {
-    if (r.type === "LIKE") likeCount++;
-    else dislikeCount++;
-  });
 
   return (
     <main className="m-4 rounded-xl  bg-[var(--color-darkish)] p-8">
       <h2 className="text-lg md:text-3xl font-bold text-center  text-[var(--color-carbon)] bg-[var(--color-primary)] rounded-xl p-2">
-        {blogData?.title}
+        {blogDetailResponse?.data?.title}
       </h2>
       <p className="text-[var(--color-muted)] my-8 md:text-lg">
-        {blogData?.content}
+        {blogDetailResponse?.data?.content}
       </p>
       <section className="bg-[var(--color-black-pearl)] flex justify-between p-2 rounded-md md:rounded-xl my-4">
         <p className="text-[var(--color-carbon)] italic">
-          {parseDate(blogData!.createdAt)}
+          {parseDate(blogDetailResponse!.data!.createdAt)}
         </p>
         <div className="flex flex-1 justify-end gap-8 items-center">
           <p className="flex items-center gap-3 text-[var(--color-stone-cold)]">
             <FaThumbsUp
               className={`hover:text-[var(--color-carbon)] ${
                 reactionType === "LIKE"
-                  ? "text-blue-600"
-                  : "text-[var(--color-muted)]"
+                  ? "text-[var(--color-muted)]"
+                  : "text-[var(--color-carbon)]"
               }
               `}
               onClick={async () => {
+                if (!role) {
+                  navigate("/login");
+                  return;
+                }
                 try {
                   if (reactionType === "LIKE") {
-                    await deleteReaction(blogData!.id, reactionId!);
+                    // remove like
+                    await deleteReaction(
+                      blogDetailResponse!.data!.id,
+                      reactionId!,
+                    );
+                    setLikeCount((prev) => prev - 1);
                     setReactionId(null);
                     setReactionType(null);
                   } else {
-                    if (reactionType === "DISLIKE")
-                      await deleteReaction(blogData!.id, reactionId!);
-                    const reaction = await reactBlog(blogData!.id, "LIKE");
+                    // switching  from dislike to like
+                    if (reactionType === "DISLIKE") {
+                      await deleteReaction(
+                        blogDetailResponse!.data!.id,
+                        reactionId!,
+                      );
+                      setDislikeCount((prev) => prev - 1);
+                    }
+                    //add like
+                    const reaction = await reactBlog(
+                      blogDetailResponse!.data!.id,
+                      "LIKE",
+                    );
+                    setLikeCount((prev) => prev + 1);
                     setReactionId(reaction.id);
                     setReactionType("LIKE");
                   }
@@ -105,22 +140,37 @@ const BlogDetailPage = () => {
             <FaThumbsDown
               className={`hover:text-[var(--color-carbon)] ${
                 reactionType === "DISLIKE"
-                  ? "text-blue-600"
-                  : "text-[var(--color-muted)]"
+                  ? "text-[var(--color-muted)]"
+                  : "text-[var(--color-carbon)]"
               }
               `}
               onClick={async () => {
                 try {
+                  // removing dislike
                   if (reactionType === "DISLIKE") {
-                    await deleteReaction(blogData!.id, reactionId!);
+                    await deleteReaction(
+                      blogDetailResponse!.data!.id,
+                      reactionId!,
+                    );
+                    setDislikeCount((prev) => prev - 1);
                     setReactionId(null);
                     setReactionType(null);
                   } else {
-                    if (reactionType === "LIKE")
-                      await deleteReaction(blogData!.id, reactionId!);
-                    const reaction = await reactBlog(blogData!.id, "DISLIKE");
+                    // switching from like to dislike
+                    if (reactionType === "LIKE") {
+                      await deleteReaction(
+                        blogDetailResponse!.data!.id,
+                        reactionId!,
+                      );
+                      setLikeCount((prev) => prev - 1);
+                    }
+                    const reaction = await reactBlog(
+                      blogDetailResponse!.data!.id,
+                      "DISLIKE",
+                    );
                     setReactionId(reaction.id);
                     setReactionType("DISLIKE");
+                    setDislikeCount((prev) => prev + 1);
                   }
                 } catch (err) {
                   console.error(err);
@@ -130,14 +180,14 @@ const BlogDetailPage = () => {
             {dislikeCount}
           </p>
           <span className="text-[var(--color-primary)] font-bold hover:text-[var(--color-carbon)]">
-            - {blogData?.author.userName}
+            - {blogDetailResponse?.data?.author.userName}
           </span>
         </div>
       </section>
       <h4 className="text-[var(--color-stone-cold)] text-2xl">
-        {blogData?.Comment.length == 0
+        {blogDetailResponse?.data?.Comment.length == 0
           ? "No Comments"
-          : blogData?.Comment.length + "Comments"}
+          : blogDetailResponse?.data?.Comment.length + "Comments"}
       </h4>
       <input
         type="text"
@@ -146,9 +196,26 @@ const BlogDetailPage = () => {
         }
         className="border-b-2 w-full border-[var(--color-border)] my-4"
         disabled={!role}
+        onChange={(e) => setNewComment(e.target.value)}
+        value={newComment}
       />
+      <div className="flex justify-end gap-4">
+        <button
+          onClick={() => setNewComment("")}
+          className="text-[var(--color-muted)] border-2 border-[var(--color-border)] p-1 rounded-md bg-[var(--color-black-pearl)]"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => handleAddComment(newComment)}
+          disabled={!newComment.trim()}
+          className="text-[var(--color-muted)] border-2 border-[var(--color-border)] p-1 rounded-md bg-[var(--color-black-pearl)]"
+        >
+          Submit
+        </button>
+      </div>
       <div className="bg-[var(--color-carbon)]">
-        {blogData?.Comment.map((com) => (
+        {comments?.map((com: TComment) => (
           <div>
             {com.userName}
             {com.text}
