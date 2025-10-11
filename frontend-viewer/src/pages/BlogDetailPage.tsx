@@ -19,7 +19,11 @@ type TComment = {
 };
 
 type TReaction = {
-  userName: string;
+  id: string;
+  user: {
+    id: string;
+    userName: string;
+  };
   type: "LIKE" | "DISLIKE";
   createdAt: string;
   updatedAt: string;
@@ -35,7 +39,7 @@ const BlogDetailPage = () => {
   const [blogDetailResponse, setBlogDetailResponse] =
     useState<IBlogDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [reactionId, setReactionId] = useState<string | null>(null);
+  const [reactionId, setReactionId] = useState<string | null>();
   const [reactionType, setReactionType] = useState<"LIKE" | "DISLIKE" | null>(
     null,
   );
@@ -47,8 +51,7 @@ const BlogDetailPage = () => {
   const blogId = slug?.split("---").pop();
   console.log("blogid", blogId);
 
-  const { role } = useAuth();
-
+  const { role, id } = useAuth();
   useEffect(() => {
     fetch(`/api/blog/${blogId}`)
       .then((res) => res.json())
@@ -64,6 +67,11 @@ const BlogDetailPage = () => {
         setComments(data.data.Comment);
         setLikeCount(likeCount);
         setDislikeCount(dislikeCount);
+        const reactionByUser = data.data.Reaction.find((r) => r.user.id === id);
+        if (reactionByUser) {
+          setReactionId(reactionByUser.id);
+          setReactionType(reactionByUser.type);
+        }
       })
       .finally(() => {
         setIsLoading(false);

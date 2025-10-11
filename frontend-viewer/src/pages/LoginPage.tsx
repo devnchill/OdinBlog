@@ -11,7 +11,7 @@ type TformInput = {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { saveRole } = useAuth();
+  const { saveRole, saveId } = useAuth();
   const [serverMessage, setServerMessage] = useState<string | null>(null);
 
   const {
@@ -39,6 +39,7 @@ const LoginPage = () => {
       }
       console.log(responseLogin);
       saveRole(json.role);
+      saveId(json.id);
       navigate("/");
     } catch (err: unknown) {
       console.log(err);
