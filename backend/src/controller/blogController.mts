@@ -77,9 +77,11 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
           select: {
             user: {
               select: {
+                id: true,
                 userName: true,
               },
             },
+            id: true,
             type: true,
             createdAt: true,
             updatedAt: true,

@@ -48,6 +48,7 @@ export async function loginUser(
       message: "login successfull",
       success: true,
       role: user.role,
+      id: user.id,
     });
   } catch (err) {
     next(err);
