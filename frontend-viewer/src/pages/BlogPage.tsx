@@ -26,7 +26,7 @@ const BlogPage = () => {
   useEffect(() => {
     fetch("/api/blog/all")
       .then((res) => res.json())
-      .catch((e) => console.error(e))
+      .catch((e) => console.log(e))
       .then((data) => setBlogResponse(data))
       .finally(() => setisLoading(false));
   }, []);
@@ -40,7 +40,7 @@ const BlogPage = () => {
   if (!blogResponse?.success) {
     return <main>Error loading blogs.{blogResponse?.message}</main>;
   }
-  console.log(blogResponse.data);
+   
 
   return (
     <main className="grid gap-6 p-8 auto-rows-min">

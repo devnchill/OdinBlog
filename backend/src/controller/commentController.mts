@@ -14,7 +14,16 @@ export async function getAllCommentsOfABlog(
       where: {
         blogId,
       },
+      include: {
+        user: {
+          select: {
+            userName: true,
+          },
+        },
+      },
     });
+    console.log(comments);
+
     return res.status(200).json({
       success: true,
       message: `sending all comments for blogId : ${blogId}`,
@@ -38,6 +47,13 @@ export async function createComment(
         userId,
         text,
         blogId,
+      },
+      include: {
+        user: {
+          select: {
+            userName: true,
+          },
+        },
       },
     });
     return res.status(201).json({
@@ -132,12 +148,10 @@ export async function updateComment(
       err instanceof Prisma.PrismaClientKnownRequestError &&
       err.code === "P2025"
     ) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: `Comment with id ${commentId} not found`,
-        });
+      return res.status(404).json({
+        success: false,
+        message: `Comment with id ${commentId} not found`,
+      });
     }
     next(err);
   }

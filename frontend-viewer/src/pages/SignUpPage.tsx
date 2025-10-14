@@ -65,7 +65,7 @@ const SignUpPage = () => {
       }
       navigate("/");
     } catch (err: unknown) {
-      console.log(err);
+       
       setServerMessage("Network error.please try after some time");
     }
   };

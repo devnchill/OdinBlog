@@ -9,6 +9,10 @@ export async function createReaction(
   next: NextFunction,
 ) {
   const { blogId, reactionType, id } = req.validationData;
+  console.log(blogId);
+  console.log(id);
+  console.log(reactionType);
+
   try {
     const createdReaction = await prisma.reaction.create({
       data: { userId: id, blogId, type: reactionType },
@@ -102,11 +106,15 @@ export async function deleteReaction(
 ) {
   const { reactionId } = req.validationData;
   try {
+    console.log("deleting reaction with reactionid", reactionId);
+
     const existingReaction = await prisma.reaction.findUniqueOrThrow({
       where: { id: reactionId },
     });
 
     const isAllowed = await verifyOwnership(req.user!, existingReaction);
+    console.log("value of is allowed is", isAllowed);
+
     if (!isAllowed) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }

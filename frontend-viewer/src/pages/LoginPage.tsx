@@ -37,12 +37,12 @@ const LoginPage = () => {
         setServerMessage(json.message);
         return;
       }
-      console.log(responseLogin);
+       
       saveRole(json.role);
       saveId(json.id);
       navigate("/");
     } catch (err: unknown) {
-      console.log(err);
+       
       setServerMessage("Network error.please try after some time");
     }
   };

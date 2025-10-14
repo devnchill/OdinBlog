@@ -4,15 +4,19 @@ import type { IBlog } from "./BlogPage";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { parseDate } from "../util/parseDate.mts";
 import { useAuth } from "../hooks/useAuth";
-import { deleteReaction, reactBlog } from "../api/reaction";
-import { handleAddComment } from "../api/comment";
+import { addReaction, deleteReaction, editReaction } from "../api/reaction";
+import { handleAddComment, handleDeleteComment } from "../api/comment";
 
 interface IBlogDetailResponse {
   data: IBlogDetail;
 }
 
 type TComment = {
-  userName: string;
+  user: {
+    userName: string;
+    id: string;
+  };
+  id: string;
   text: string;
   createdAt: string;
   updatedAt: string;
@@ -49,13 +53,13 @@ const BlogDetailPage = () => {
   const [newComment, setNewComment] = useState<string>("");
   const { slug } = useParams<{ slug: string }>();
   const blogId = slug?.split("---").pop();
-  console.log("blogid", blogId);
 
   const { role, id } = useAuth();
   useEffect(() => {
     fetch(`/api/blog/${blogId}`)
       .then((res) => res.json())
       .catch((e) => console.log(e))
+
       .then((data: IBlogDetailResponse) => {
         setBlogDetailResponse(data);
         const likeCount = data.data?.Reaction.filter(
@@ -76,11 +80,8 @@ const BlogDetailPage = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [blogId]);
+  }, [blogId, id]);
 
-  if (blogDetailResponse) {
-    console.log(blogDetailResponse);
-  }
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -110,7 +111,17 @@ const BlogDetailPage = () => {
                   return;
                 }
                 try {
-                  if (reactionType === "LIKE") {
+                  if (!reactionId && !reactionType) {
+                    const reactionResponse = await addReaction(
+                      blogDetailResponse!.data.id,
+                      "LIKE",
+                    );
+                    console.log(reactionResponse);
+
+                    setReactionId(reactionResponse.data.id);
+                    setReactionType("LIKE");
+                    setLikeCount((prev) => prev + 1);
+                  } else if (reactionType === "LIKE") {
                     // remove like
                     await deleteReaction(
                       blogDetailResponse!.data!.id,
@@ -121,24 +132,19 @@ const BlogDetailPage = () => {
                     setReactionType(null);
                   } else {
                     // switching  from dislike to like
-                    if (reactionType === "DISLIKE") {
-                      await deleteReaction(
-                        blogDetailResponse!.data!.id,
-                        reactionId!,
-                      );
-                      setDislikeCount((prev) => prev - 1);
-                    }
-                    //add like
-                    const reaction = await reactBlog(
-                      blogDetailResponse!.data!.id,
+
+                    const reactionResponse = await editReaction(
+                      blogDetailResponse!.data.id,
+                      reactionId!,
                       "LIKE",
                     );
+                    setDislikeCount((prev) => prev - 1);
                     setLikeCount((prev) => prev + 1);
-                    setReactionId(reaction.id);
+                    setReactionId(reactionResponse.data.id);
                     setReactionType("LIKE");
                   }
                 } catch (err) {
-                  console.error(err);
+                  console.log(err);
                 }
               }}
             />
@@ -154,8 +160,21 @@ const BlogDetailPage = () => {
               `}
               onClick={async () => {
                 try {
+                  // dislike
+                  if (!reactionId && !reactionType) {
+                    console.log(reactionId);
+                    console.log(blogDetailResponse);
+
+                    const reactionResponse = await addReaction(
+                      blogDetailResponse!.data.id,
+                      "DISLIKE",
+                    );
+                    setReactionId(reactionResponse.data.id);
+                    setReactionType("DISLIKE");
+                    setDislikeCount((prev) => prev + 1);
+                  }
                   // removing dislike
-                  if (reactionType === "DISLIKE") {
+                  else if (reactionType === "DISLIKE") {
                     await deleteReaction(
                       blogDetailResponse!.data!.id,
                       reactionId!,
@@ -165,23 +184,17 @@ const BlogDetailPage = () => {
                     setReactionType(null);
                   } else {
                     // switching from like to dislike
-                    if (reactionType === "LIKE") {
-                      await deleteReaction(
-                        blogDetailResponse!.data!.id,
-                        reactionId!,
-                      );
-                      setLikeCount((prev) => prev - 1);
-                    }
-                    const reaction = await reactBlog(
-                      blogDetailResponse!.data!.id,
+                    const reactionResponse = editReaction(
+                      blogDetailResponse!.data.id,
+                      reactionId!,
                       "DISLIKE",
                     );
-                    setReactionId(reaction.id);
-                    setReactionType("DISLIKE");
                     setDislikeCount((prev) => prev + 1);
+                    setLikeCount((prev) => prev - 1);
+                    setReactionType("DISLIKE");
                   }
                 } catch (err) {
-                  console.error(err);
+                  console.log(err);
                 }
               }}
             />{" "}
@@ -215,20 +228,47 @@ const BlogDetailPage = () => {
           Cancel
         </button>
         <button
-          onClick={() => handleAddComment(newComment)}
+          onClick={async () => {
+            const commentResponse = await handleAddComment(
+              newComment,
+              blogDetailResponse!.data.id,
+            );
+            if (!commentResponse.success) {
+              return <p>Error creating comment</p>;
+            }
+            setComments((pre) =>
+              pre ? [...pre, commentResponse.data] : [commentResponse.data],
+            );
+          }}
           disabled={!newComment.trim()}
           className="text-[var(--color-muted)] border-2 border-[var(--color-border)] p-1 rounded-md bg-[var(--color-black-pearl)]"
         >
           Submit
         </button>
       </div>
-      <div className="bg-[var(--color-carbon)]">
+      <div className="bg-[var(--color-carbon)] rounded-md p-3 my-6 flex flex-col gap-2">
         {comments?.map((com: TComment) => (
-          <div>
-            {com.userName}
-            {com.text}
-            {com.createdAt}
-            {com.updatedAt}
+          <div
+            key={com.id}
+            className="bg-[var(--color-stone-cold)] rounded-md p-2 my-2 flex justify-between items-center"
+          >
+            <div>
+              <div className="font-semibold">{com.user.userName}</div>
+              <div>{com.text}</div>
+              <div className="text-sm text-gray-500">{com.updatedAt}</div>
+            </div>
+
+            {/* Only show delete button if comment belongs to logged-in user */}
+            {com.user.id === id && (
+              <button
+                onClick={() =>
+                  handleDeleteComment(com.id, blogDetailResponse!.data!.id)
+                }
+                className="text-red-500 hover:text-red-700 text-sm"
+              >
+                Delete
+              </button>
+            )}
           </div>
         ))}
       </div>
