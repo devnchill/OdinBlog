@@ -51,6 +51,7 @@ export async function createComment(
       include: {
         user: {
           select: {
+            id: true,
             userName: true,
           },
         },
@@ -79,7 +80,9 @@ export async function deleteComment(
   res: Response,
   next: NextFunction,
 ) {
-  const { blogId, commentId } = req.validationData;
+  const { blogId, commentId, id } = req.validationData;
+  console.log("blogId", blogId, "commentId", commentId, "userid", id);
+
   try {
     const comment = await prisma.comment.findUniqueOrThrow({
       where: {
@@ -87,6 +90,8 @@ export async function deleteComment(
       },
     });
     const isAllowed = await verifyOwnership(req.user!, comment);
+    console.log(isAllowed);
+
     if (isAllowed) {
       await prisma.comment.delete({
         where: {
