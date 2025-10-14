@@ -41,7 +41,7 @@ commentRouter.post(
     },
     {
       schema: commentSchema,
-      source: "params",
+      source: "body",
     },
   ]),
   createComment,

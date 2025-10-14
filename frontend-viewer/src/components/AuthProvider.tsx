@@ -2,18 +2,22 @@ import { useState, type PropsWithChildren } from "react";
 import { AuthContext } from "../context/AuthContext.mts";
 
 export const AuthProvider = ({ children }: PropsWithChildren<object>) => {
-  const [role, setRole] = useState<string | null>(() =>
-    localStorage.getItem("role"),
+  const [role, setRole] = useState<string | null>(
+    () => localStorage.getItem("role") || null,
   );
-  const [id, setId] = useState<string | null>(() => localStorage.getItem("id"));
+  const [id, setId] = useState<string | null>(
+    () => localStorage.getItem("id") || null,
+  );
 
   function saveId(id: string | null) {
-    localStorage.setItem("id", id ?? "");
+    if (id) localStorage.setItem("id", id);
+    else localStorage.removeItem("id");
     setId(id);
   }
 
   function saveRole(role: string | null) {
-    localStorage.setItem("role", role ?? "");
+    if (role) localStorage.setItem("role", role);
+    else localStorage.removeItem("role");
     setRole(role);
   }
 

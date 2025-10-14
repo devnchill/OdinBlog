@@ -3,7 +3,7 @@ import NavBtnLink from "./NavBtnLink";
 import { useAuth } from "../../hooks/useAuth";
 
 const NavBar = () => {
-  const { role, saveRole } = useAuth();
+  const { role, saveRole, saveId } = useAuth();
   const signOut = async () => {
     try {
       const response = await fetch("/api/logout", {
@@ -11,14 +11,15 @@ const NavBar = () => {
         credentials: "include",
       });
       const json = await response.json();
-
       if (json.success) {
-        saveRole("");
+        saveRole(null);
+        saveId(null);
+        window.location.reload();
       } else {
-        console.error("Logout failed:", json.message);
+        console.log("Logout failed:", json.message);
       }
     } catch (err) {
-      console.error("Logout error:", err);
+      console.log("Logout error:", err);
     }
   };
 

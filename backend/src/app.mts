@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
-app.use("/v1/auth", authRouter);
 app.use("/v1/signup", signUpRouter);
+app.use("/v1/auth", authRouter);
 app.use("/v1/login", loginRouter);
 app.use("/v1/logout", logoutRouter);
 app.use("/v1/blog", blogRouter);

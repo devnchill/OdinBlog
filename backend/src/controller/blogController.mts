@@ -21,6 +21,7 @@ export async function getAllBlogs(
         createdAt: true,
         author: {
           select: {
+            id: true,
             userName: true,
           },
         },
@@ -65,9 +66,11 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
           select: {
             user: {
               select: {
+                id: true,
                 userName: true,
               },
             },
+            id: true,
             text: true,
             createdAt: true,
             updatedAt: true,

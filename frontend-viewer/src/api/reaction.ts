@@ -1,4 +1,4 @@
-export async function reactBlog(blogId: string, type: "LIKE" | "DISLIKE") {
+export async function addReaction(blogId: string, type: "LIKE" | "DISLIKE") {
   const response = await fetch(`/api/blog/${blogId}/reactions/new`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -8,7 +8,7 @@ export async function reactBlog(blogId: string, type: "LIKE" | "DISLIKE") {
   const json = await response.json();
   if (!response.ok || !json.success)
     throw new Error(json.message || "Network error");
-  return json.data;
+  return json;
 }
 
 export async function deleteReaction(blogId: string, reactionId: string) {
@@ -27,5 +27,24 @@ export async function deleteReaction(blogId: string, reactionId: string) {
   if (!json.success) {
     console.error(json.message);
   }
-  return response;
+  return json;
+}
+export async function editReaction(
+  blogId: string,
+  reactionId: string,
+  type: "LIKE" | "DISLIKE",
+) {
+  const response = await fetch(`/api/blog/${blogId}/reactions/${reactionId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ reactionType: type }),
+  });
+  const json = await response.json();
+  if (!json.success) {
+    console.error(json.message);
+  }
+  return json;
 }

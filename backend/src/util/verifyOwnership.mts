@@ -10,9 +10,8 @@ export default async function verifyOwnership<T extends Ownable>(
   const { role } = user;
   if (
     role === Role.ADMIN ||
-    (role === Role.AUTHOR &&
-      (("userId" in resource && resource.userId === user.id) ||
-        ("authorId" in resource && resource.authorId === user.id)))
+    ("userId" in resource && resource.userId === user.id) ||
+    ("authorId" in resource && resource.authorId === user.id)
   ) {
     return true;
   }
