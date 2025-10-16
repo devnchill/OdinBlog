@@ -1,24 +1,6 @@
 import { useEffect, useState } from "react";
 import BlogCard from "../components/Blogs/BlogCard";
-
-interface IBlogResponse {
-  data: IBlog[];
-  success: boolean;
-  message: string;
-}
-
-export interface IBlog {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  author: {
-    userName: string;
-  };
-  _count: {
-    Comment: number;
-  };
-}
+import type { IBlogResponse } from "../types/blog.types";
 
 const BlogPage = () => {
   const [blogResponse, setBlogResponse] = useState<IBlogResponse | null>(null);
@@ -40,7 +22,6 @@ const BlogPage = () => {
   if (!blogResponse?.success) {
     return <main>Error loading blogs.{blogResponse?.message}</main>;
   }
-   
 
   return (
     <main className="grid gap-6 p-8 auto-rows-min">

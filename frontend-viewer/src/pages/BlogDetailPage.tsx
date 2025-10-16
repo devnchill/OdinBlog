@@ -1,54 +1,26 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import type { IBlog } from "./BlogPage";
+import { useParams } from "react-router";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { parseDate } from "../util/parseDate.mts";
 import { useAuth } from "../hooks/useAuth";
-import { addReaction, deleteReaction, updateReaction } from "../api/reaction";
 import {
   handleAddComment,
   handleDeleteComment,
   handleEditComment,
 } from "../api/comment";
 import { BsThreeDotsVertical } from "react-icons/bs";
-
-interface IBlogDetailResponse {
-  data: IBlogDetail;
-}
-
-type TComment = {
-  user: {
-    userName: string;
-    id: string;
-  };
-  id: string;
-  text: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type TReaction = {
-  id: string;
-  user: {
-    id: string;
-    userName: string;
-  };
-  type: "LIKE" | "DISLIKE";
-  createdAt: string;
-  updatedAt: string;
-};
-
-interface IBlogDetail extends IBlog {
-  Comment: TComment[];
-  Reaction: TReaction[];
-}
+import type {
+  IBlogDetailResponse,
+  TComment,
+  TReaction,
+} from "../types/blog.types";
+import { ReactionComponent } from "../components/Blogs/ReactionComponent";
 
 const BlogDetailPage = () => {
-  const navigate = useNavigate();
   const [blogDetailResponse, setBlogDetailResponse] =
     useState<IBlogDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [reactionId, setReactionId] = useState<string | null>();
+  const [reactionId, setReactionId] = useState<string | null>(null);
   const [reactionType, setReactionType] = useState<"LIKE" | "DISLIKE" | null>(
     null,
   );
@@ -63,23 +35,23 @@ const BlogDetailPage = () => {
   const blogId = slug?.split("---").pop();
 
   const { role, id } = useAuth();
+
   useEffect(() => {
     fetch(`/api/blog/${blogId}`)
       .then((res) => res.json())
       .catch((e) => console.log(e))
-
-      .then((data: IBlogDetailResponse) => {
-        setBlogDetailResponse(data);
-        const likeCount = data.data?.Reaction.filter(
+      .then((res: IBlogDetailResponse) => {
+        setBlogDetailResponse(res);
+        const likeCount = res.data?.Reaction.filter(
           (r: TReaction) => r.type === "LIKE",
         ).length;
-        const dislikeCount = data.data?.Reaction.filter(
+        const dislikeCount = res.data?.Reaction.filter(
           (r: TReaction) => r.type === "DISLIKE",
         ).length;
-        setComments(data.data.Comment);
+        setComments(res.data.Comment);
         setLikeCount(likeCount);
         setDislikeCount(dislikeCount);
-        const reactionByUser = data.data.Reaction.find((r) => r.user.id === id);
+        const reactionByUser = res.data.Reaction.find((r) => r.user.id === id);
         if (reactionByUser) {
           setReactionId(reactionByUser.id);
           setReactionType(reactionByUser.type);
@@ -108,108 +80,32 @@ const BlogDetailPage = () => {
             {parseDate(blogDetailResponse!.data!.createdAt)}
           </p>
           <div className="flex flex-1 justify-end gap-8 items-center">
-            <p className="flex items-center gap-3 text-[var(--color-stone-cold)]">
-              <FaThumbsUp
-                className={`hover:text-[var(--color-carbon)] ${
-                  reactionType === "LIKE"
-                    ? "text-[var(--color-muted)]"
-                    : "text-[var(--color-carbon)]"
-                }
-              `}
-                onClick={async () => {
-                  if (!role) {
-                    navigate("/login");
-                    return;
-                  }
-                  try {
-                    if (!reactionId && !reactionType) {
-                      const reactionResponse = await addReaction(
-                        blogDetailResponse!.data.id,
-                        "LIKE",
-                      );
-                      console.log(reactionResponse);
-
-                      setReactionId(reactionResponse.data.id);
-                      setReactionType("LIKE");
-                      setLikeCount((prev) => prev + 1);
-                    } else if (reactionType === "LIKE") {
-                      // remove like
-                      await deleteReaction(
-                        blogDetailResponse!.data!.id,
-                        reactionId!,
-                      );
-                      setLikeCount((prev) => prev - 1);
-                      setReactionId(null);
-                      setReactionType(null);
-                    } else {
-                      // switching  from dislike to like
-                      const reactionResponse = await updateReaction(
-                        blogDetailResponse!.data.id,
-                        reactionId!,
-                        "LIKE",
-                      );
-                      setDislikeCount((prev) => prev - 1);
-                      setLikeCount((prev) => prev + 1);
-                      setReactionId(reactionResponse.data.id);
-                      setReactionType("LIKE");
-                    }
-                  } catch (err) {
-                    console.log(err);
-                  }
-                }}
-              />
-              {likeCount}
-            </p>
-            <p className="flex items-center gap-3 text-[var(--color-stone-cold)]">
-              <FaThumbsDown
-                className={`hover:text-[var(--color-carbon)] ${
-                  reactionType === "DISLIKE"
-                    ? "text-[var(--color-muted)]"
-                    : "text-[var(--color-carbon)]"
-                }
-              `}
-                onClick={async () => {
-                  try {
-                    // dislike
-                    if (!reactionId && !reactionType) {
-                      console.log(reactionId);
-                      console.log(blogDetailResponse);
-
-                      const reactionResponse = await addReaction(
-                        blogDetailResponse!.data.id,
-                        "DISLIKE",
-                      );
-                      setReactionId(reactionResponse.data.id);
-                      setReactionType("DISLIKE");
-                      setDislikeCount((prev) => prev + 1);
-                    }
-                    // removing dislike
-                    else if (reactionType === "DISLIKE") {
-                      await deleteReaction(
-                        blogDetailResponse!.data!.id,
-                        reactionId!,
-                      );
-                      setDislikeCount((prev) => prev - 1);
-                      setReactionId(null);
-                      setReactionType(null);
-                    } else {
-                      // switching from like to dislike
-                      updateReaction(
-                        blogDetailResponse!.data.id,
-                        reactionId!,
-                        "DISLIKE",
-                      );
-                      setDislikeCount((prev) => prev + 1);
-                      setLikeCount((prev) => prev - 1);
-                      setReactionType("DISLIKE");
-                    }
-                  } catch (err) {
-                    console.log(err);
-                  }
-                }}
-              />{" "}
-              {dislikeCount}
-            </p>
+            <ReactionComponent
+              IconComponent={FaThumbsUp}
+              reactionId={reactionId}
+              role={role}
+              reactionType={reactionType}
+              blogDetailResponse={blogDetailResponse}
+              setReactionId={setReactionId}
+              setReactionType={setReactionType}
+              setLikeCount={setLikeCount}
+              setDislikeCount={setDislikeCount}
+              reactionCount={likeCount}
+              iconType="LIKE"
+            />
+            <ReactionComponent
+              IconComponent={FaThumbsDown}
+              reactionId={reactionId}
+              role={role}
+              reactionType={reactionType}
+              blogDetailResponse={blogDetailResponse}
+              setReactionId={setReactionId}
+              setReactionType={setReactionType}
+              setLikeCount={setLikeCount}
+              setDislikeCount={setDislikeCount}
+              reactionCount={dislikeCount}
+              iconType="DISLIKE"
+            />
             <span className="text-[var(--color-primary)] font-bold hover:text-[var(--color-carbon)]">
               - {blogDetailResponse?.data?.author.userName}
             </span>
