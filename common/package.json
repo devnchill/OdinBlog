@@ -8,5 +8,8 @@
   "scripts": {
     "build": "npx tsc -b",
     "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
   }
 }
