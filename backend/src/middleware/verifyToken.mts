@@ -11,6 +11,9 @@ export async function verifyJwt(
 ) {
   const accessToken = req.cookies.accessToken;
   const refreshToken = req.cookies.refreshToken;
+  console.log("accessToken", accessToken);
+  console.log("refreshToken", refreshToken);
+
   if (accessToken) {
     try {
       const decoded = jwt.verify(
@@ -18,6 +21,8 @@ export async function verifyJwt(
         process.env.ACCESS_TOKEN_SECRET!,
       ) as TUserOnReq;
       req.user = decoded;
+      console.log(req.user);
+
       return next();
     } catch (err) {
       if (!(err instanceof jwt.TokenExpiredError))

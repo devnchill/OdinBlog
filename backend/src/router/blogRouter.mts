@@ -4,6 +4,7 @@ import {
   deleteBlog,
   editBlog,
   getAllBlogs,
+  getAllBlogsOfAuthor,
   getBlog,
 } from "../controller/blogController.mjs";
 import { verifyJwt } from "../middleware/verifyToken.mjs";
@@ -16,8 +17,16 @@ import { idSchema, blogBodySchema, blogIdSchema } from "@odinblog/common";
 
 const blogRouter = Router();
 
-// ----- guest (no account) -----
 blogRouter.get("/all", getAllBlogs);
+
+// only for authors
+blogRouter.get(
+  "/myblogs",
+  verifyJwt,
+  validateFields([{ schema: idSchema, source: "user" }]),
+  getAllBlogsOfAuthor,
+);
+
 blogRouter.get(
   "/:blogId",
   validateFields([{ schema: blogIdSchema, source: "params" }]),
