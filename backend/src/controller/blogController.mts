@@ -44,6 +44,8 @@ export async function getAllBlogs(
 }
 
 export async function getBlog(req: Request, res: Response, next: NextFunction) {
+  console.log("hello");
+
   const { blogId } = req.validationData;
   try {
     const blog = await prisma.blog.findUniqueOrThrow({
@@ -108,6 +110,28 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
       }
     }
     next(e);
+  }
+}
+
+export async function getAllBlogsOfAuthor(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const { id } = req.validationData;
+  try {
+    const blogs = await prisma.blog.findMany({
+      where: {
+        authorId: id,
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: `sending all blogs created by author with authorId ${id}`,
+      data: blogs,
+    });
+  } catch (err) {
+    next(err);
   }
 }
 
