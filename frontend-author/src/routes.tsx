@@ -7,6 +7,7 @@ import ContactPage from "./pages/ContactPage";
 import ErrorPage from "./pages/ErrorPage";
 import { Layout } from "./components/Layout";
 import DashBoard from "./pages/DashBoard";
+import BlogDetailPage from "./pages/BlogDetailPage";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/signup", element: <SignUpPage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/dashboard", element: <DashBoard /> },
+      { path: "/blog/:slug", element: <BlogDetailPage /> },
     ],
     errorElement: <ErrorPage />,
   },

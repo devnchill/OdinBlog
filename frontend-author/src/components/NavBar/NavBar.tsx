@@ -40,7 +40,7 @@ const NavBar = () => {
         {role ? (
           <>
             <button onClick={signOut}>Signout</button>
-            <NavBtnLink to="/blog" text="MyBlogs" />
+            <NavBtnLink to="/dashboard" text="MyBlogs" />
           </>
         ) : (
           <>
