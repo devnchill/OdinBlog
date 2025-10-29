@@ -1,7 +1,6 @@
 import { Link } from "react-router";
-import { FaComment } from "react-icons/fa";
-import { parseDate } from "../../util/parseDate.mts";
-import type { IBlog } from "../../types/blog.types";
+import { parseDate } from "../util/parseDate";
+import type { IBlog } from "../types/blog.types";
 
 interface IBlogCardProps {
   blog: IBlog;
@@ -27,14 +26,7 @@ const BlogCard = ({ blog }: IBlogCardProps) => {
           <span className="italic text-[var(--color-stone-cold)]">
             {parseDate(blog.createdAt)}{" "}
           </span>
-          <span className="mx-4 text-[var(--color-carbon)]">by</span>
-          <span className="text-[var(--color-primary)] font-bold">
-            {blog.author.userName}{" "}
-          </span>
         </p>
-        <span className="text-[var(--color-stone-cold)]">
-          <FaComment className="inline" /> {blog._count.Comment}{" "}
-        </span>
       </div>
     </Link>
   );
