@@ -12,10 +12,15 @@ const BlogDetailPage = () => {
   const blogId = slug?.split("---").pop();
 
   useEffect(() => {
-    fetch(`/api/blog/${blogId}`)
-      .then((res) => res.json())
-      .catch((e) => console.log(e))
+    fetch(`/api/blog/authorBlogs/${blogId}`)
+      .then((res) => {
+        const data = res.json();
+        return data;
+      })
+      // .catch((e) => console.log(e))
       .then((res: IBlogDetailResponse) => {
+        console.log(res);
+
         setBlogDetailResponse(res);
       })
       .finally(() => {

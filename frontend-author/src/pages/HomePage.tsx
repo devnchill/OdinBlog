@@ -19,7 +19,7 @@ const HomePage = () => {
         {role ? (
           <>
             <Link
-              to="/blog"
+              to="/dashboard"
               className="mt-6 inline-block bg-[var(--color-black-pearl)] text-[var(--color-surface)] px-6 py-3 rounded-lg hover:bg-[var(--color-carbon)] transition-colors font-bold"
             >
               View Your Blogs
