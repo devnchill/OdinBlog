@@ -1,17 +1,16 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import FormField from "../components/FormField";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
 
 type TformInput = {
-  userName: string;
-  password: string;
+  title: string;
+  content: string;
+  publish: boolean;
 };
 
-const LoginPage = () => {
+const AddBlog = () => {
   const navigate = useNavigate();
-  const { saveRole, saveId } = useAuth();
   const [serverMessage, setServerMessage] = useState<string | null>(null);
 
   const {
@@ -21,14 +20,14 @@ const LoginPage = () => {
   } = useForm<TformInput>();
 
   const onSubmit: SubmitHandler<TformInput> = async (data) => {
-    const { userName, password } = data;
+    const { title, content } = data;
     try {
-      const responseLogin = await fetch("/api/login", {
+      const responseLogin = await fetch("/api/blog/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userName, password }),
+        body: JSON.stringify({ title, content }),
       });
 
       const json = await responseLogin.json();
@@ -37,10 +36,7 @@ const LoginPage = () => {
         setServerMessage(json.message);
         return;
       }
-
-      saveRole(json.role);
-      saveId(json.id);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: unknown) {
       setServerMessage("Network error.please try after some time");
       console.log(err);
@@ -50,7 +46,7 @@ const LoginPage = () => {
     <main className="flex justify-center items-center ">
       <div className="w-full md:w-80">
         <p className="text-center text-3xl my-8 text-[var(--color-muted)]">
-          Log in
+          Create Blog
         </p>
         <div className="border-[var(--color-border)] border-2 rounded-xl p-4 bg-[var(--color-darkish)]">
           <form
@@ -58,37 +54,37 @@ const LoginPage = () => {
             className="flex flex-col gap-3"
           >
             <FormField
-              text="Username"
-              name="userName"
+              text="title"
+              name="title"
               register={register}
               type="text"
               options={{
-                required: { value: true, message: "Username is required" },
+                required: { value: true, message: "title is required" },
                 minLength: {
-                  value: 2,
-                  message: "Username must be at least 2 characters",
+                  value: 8,
+                  message: "title must be at least 8 characters",
                 },
                 maxLength: {
-                  value: 10,
-                  message: "Username cannot exceed 10 characters",
+                  value: 30,
+                  message: "title cannot exceed 30 characters",
                 },
               }}
             />
-            {errors.userName && (
+            {errors.title && (
               <span className="text-[var(--color-primary)] italic">
-                {errors.userName.message}
+                {errors.title.message}
               </span>
             )}
             <FormField
-              text="Password"
-              name="password"
+              text="content"
+              name="content"
               register={register}
-              type="password"
+              type="text"
               options={{ required: true }}
             />
-            {errors.password && (
+            {errors.content && (
               <span className="text-[var(--color-primary)] italic">
-                {errors.password.message}
+                {errors.content.message}
               </span>
             )}
             {serverMessage && (
@@ -97,22 +93,13 @@ const LoginPage = () => {
               </span>
             )}
             <button className="text-center my-4 text-[var(--color-muted)] bg-[var(--color-carbon)] p-1 border border-[var(--color-border)] rounded-md hover:bg-[var(--color-carbon)]">
-              Log in
+              Create Blog
             </button>
           </form>
-          <p className="text-[var(--color-muted)]">
-            Don't have an account?{" "}
-            <Link
-              to={"/signup"}
-              className="text-[var(--color-stone-cold)] hover:text-[var(--color-carbon)]"
-            >
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
     </main>
   );
 };
 
-export default LoginPage;
+export default AddBlog;

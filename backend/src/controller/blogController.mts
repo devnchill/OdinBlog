@@ -42,10 +42,49 @@ export async function getAllBlogs(
     next(e);
   }
 }
+export async function getBlogOfAuthor(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const { blogId } = req.validationData;
+  try {
+    const blog = await prisma.blog.findUniqueOrThrow({
+      where: {
+        id: blogId,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            userName: true,
+          },
+        },
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: `sending blog with blogId ${blogId}`,
+      data: blog,
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        return res.status(404).json({
+          success: false,
+          message: `Could not find blog with blogId ${blogId}`,
+        });
+      }
+    }
+    next(e);
+  }
+}
 
 export async function getBlog(req: Request, res: Response, next: NextFunction) {
-  console.log("hello");
-
   const { blogId } = req.validationData;
   try {
     const blog = await prisma.blog.findUniqueOrThrow({
@@ -94,7 +133,6 @@ export async function getBlog(req: Request, res: Response, next: NextFunction) {
         },
       },
     });
-
     return res.status(200).json({
       success: true,
       message: `sending blog with blogId ${blogId}`,

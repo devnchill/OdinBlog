@@ -6,6 +6,7 @@ import {
   getAllBlogs,
   getAllBlogsOfAuthor,
   getBlog,
+  getBlogOfAuthor,
 } from "../controller/blogController.mjs";
 import { verifyJwt } from "../middleware/verifyToken.mjs";
 import verifyRole from "../middleware/verifyRole.mjs";
@@ -42,6 +43,12 @@ blogRouter.use(
   verifyJwt,
   validateFields([{ schema: idSchema, source: "user" }]),
   verifyRole(Role.AUTHOR),
+);
+
+blogRouter.get(
+  "/authorBlogs/:blogId",
+  validateFields([{ schema: blogIdSchema, source: "params" }]),
+  getBlogOfAuthor,
 );
 
 blogRouter.post(
