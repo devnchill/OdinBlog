@@ -5,8 +5,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "tsc && node dist/app.mjs",
-    "build": "tsc"
+    "dev": "npx tsc && node dist/app.mjs",
+    "build": "npx tsc",
+    "start": "node dist/app.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",

@@ -9,6 +9,7 @@ import { Layout } from "./components/Layout";
 import DashBoard from "./pages/DashBoard";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import AddBlog from "./pages/AddBlog";
+import EditBlog from "./pages/EditBlog";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/dashboard", element: <DashBoard /> },
       { path: "/write", element: <AddBlog /> },
+      { path: "/edit/:blogId", element: <EditBlog /> },
       { path: "/blog/:slug", element: <BlogDetailPage /> },
     ],
     errorElement: <ErrorPage />,

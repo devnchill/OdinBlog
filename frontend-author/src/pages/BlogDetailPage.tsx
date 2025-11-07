@@ -40,7 +40,8 @@ const BlogDetailPage = () => {
   };
 
   const handleEdit = () => {
-    navigate(`/edit/${blogId}`);
+    console.log(blogDetailResponse);
+    navigate(`/edit/${blogId}`, { state: blogDetailResponse?.data });
   };
 
   if (isLoading) return <div>Loading...</div>;
