@@ -12,7 +12,7 @@ import {
   commentIdSchema,
   commentSchema,
   idSchema,
-} from "@odinblog/common";
+} from "@odinblog/zod-types";
 
 const commentRouter = Router({ mergeParams: true });
 

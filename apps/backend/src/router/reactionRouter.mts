@@ -12,7 +12,7 @@ import {
   idSchema,
   reactionIdSchema,
   reactionSchema,
-} from "@odinblog/common";
+} from "@odinblog/zod-types";
 
 const reactionRouter = Router({ mergeParams: true });
 
