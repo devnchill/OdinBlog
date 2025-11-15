@@ -1,5 +1,5 @@
 {
-  "name": "@odinblog/common",
+  "name": "@odinblog/zod-types",
   "version": "1.0.0",
   "main": "./dist/index.mjs",
   "types": "dist/index.d.mts",

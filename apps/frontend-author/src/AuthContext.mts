@@ -6,4 +6,5 @@ interface IAuthContext {
   saveRole: (role: string | null) => void;
   saveId: (id: string | null) => void;
 }
+
 export const AuthContext = createContext<IAuthContext | undefined>(undefined);
