@@ -1,13 +1,10 @@
 import { Link, useNavigate } from "react-router";
-import FormField from "../components/FormField";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-
-type TformInput = {
-  userName: string;
-  password: string;
-};
+import { sendLoginRequest } from "../api/login";
+import type { TLoginFormInput } from "../types/login.types";
+import { LoginForm } from "@odinblog/blog-shared-components";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -18,20 +15,13 @@ const LoginPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TformInput>();
+  } = useForm<TLoginFormInput>();
 
-  const onSubmit: SubmitHandler<TformInput> = async (data) => {
+  const onSubmit: SubmitHandler<TLoginFormInput> = async (data) => {
     const { userName, password } = data;
-    try {
-      const responseLogin = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userName, password }),
-      });
 
-      const json = await responseLogin.json();
+    try {
+      const json = await sendLoginRequest({ userName, password });
 
       if (!json.success) {
         setServerMessage(json.message);
@@ -42,6 +32,8 @@ const LoginPage = () => {
       saveId(json.id);
       navigate("/");
     } catch (err: unknown) {
+      console.log(err);
+
       setServerMessage("Network error.please try after some time");
     }
   };
@@ -52,53 +44,13 @@ const LoginPage = () => {
           Log in
         </p>
         <div className="border-[var(--color-border)] border-2 rounded-xl p-4 bg-[var(--color-darkish)]">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-3"
-          >
-            <FormField
-              text="Username"
-              name="userName"
-              register={register}
-              type="text"
-              options={{
-                required: { value: true, message: "Username is required" },
-                minLength: {
-                  value: 2,
-                  message: "Username must be at least 2 characters",
-                },
-                maxLength: {
-                  value: 10,
-                  message: "Username cannot exceed 10 characters",
-                },
-              }}
-            />
-            {errors.userName && (
-              <span className="text-[var(--color-primary)] italic">
-                {errors.userName.message}
-              </span>
-            )}
-            <FormField
-              text="Password"
-              name="password"
-              register={register}
-              type="password"
-              options={{ required: true }}
-            />
-            {errors.password && (
-              <span className="text-[var(--color-primary)] italic">
-                {errors.password.message}
-              </span>
-            )}
-            {serverMessage && (
-              <span className="text-[var(--color-primary)] italic">
-                {serverMessage}
-              </span>
-            )}
-            <button className="text-center my-4 text-[var(--color-muted)] bg-[var(--color-carbon)] p-1 border border-[var(--color-border)] rounded-md hover:bg-[var(--color-carbon)]">
-              Log in
-            </button>
-          </form>
+          <LoginForm
+            register={register}
+            errors={errors}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+            serverMessage={serverMessage}
+          />
           <p className="text-[var(--color-muted)]">
             Don't have an account?{" "}
             <Link

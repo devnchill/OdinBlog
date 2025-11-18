@@ -23,4 +23,4 @@ const FormField = ({ text, name, type, register, options }: IFormFieldProp) => {
   );
 };
 
-export default FormField;
+export { FormField };
