@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { SignUpForm } from "@odinblog/blog-shared-components";
 import sendSignUpRequest from "../api/signup";
-import { sendLoginRequest } from "../api/login";
 import type { TSignUpFormInput } from "../types/signup.types";
 
 const SignUpPage = () => {
@@ -44,14 +43,7 @@ const SignUpPage = () => {
         return;
       }
 
-      const responseLogin = await sendLoginRequest({ userName, password });
-
-      if (!responseLogin.success) {
-        setServerMessage(responseLogin.message);
-        return;
-      }
-
-      navigate("/");
+      navigate("/login");
     } catch (err) {
       console.log(err);
       setServerMessage("Network error.please try after some time");
