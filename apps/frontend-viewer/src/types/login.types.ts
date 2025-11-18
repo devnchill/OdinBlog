@@ -3,4 +3,6 @@ type TSendloginRequest = {
   password: string;
 };
 
-export type { TSendloginRequest };
+type TLoginFormInput = TSendloginRequest;
+
+export type { TSendloginRequest, TLoginFormInput };
