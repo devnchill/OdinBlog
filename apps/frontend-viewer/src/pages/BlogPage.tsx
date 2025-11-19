@@ -1,31 +1,28 @@
-import { useEffect, useState } from "react";
 import BlogCard from "../components/Blogs/BlogCard";
-import type { IBlogResponse } from "../types/blog.types";
+import { useBlogs } from "../hooks/useBlogs";
 
 const BlogPage = () => {
-  const [blogResponse, setBlogResponse] = useState<IBlogResponse | null>(null);
-  const [isLoading, setisLoading] = useState<boolean>(true);
-  useEffect(() => {
-    fetch("/api/blog/all")
-      .then((res) => res.json())
-      .catch((e) => console.log(e))
-      .then((data) => setBlogResponse(data))
-      .finally(() => setisLoading(false));
-  }, []);
+  const { data, loading, error } = useBlogs();
 
-  if (isLoading)
+  if (loading)
     return (
       <main className="text-center text-[var(--color-primary-glow)]">
         Loading...
       </main>
     );
-  if (!blogResponse?.success) {
-    return <main>Error loading blogs.{blogResponse?.message}</main>;
+
+  if (!data?.success) {
+    return <main>Error loading blogs.{data?.message}</main>;
   }
+
+  if (error)
+    return (
+      <main className="text-center text-[var(--color-primary)]">{error}</main>
+    );
 
   return (
     <main className="grid gap-6 p-8 auto-rows-min">
-      {blogResponse?.data.map((blog) => (
+      {data?.data.map((blog) => (
         <BlogCard blog={blog} key={blog.id} />
       ))}
     </main>
