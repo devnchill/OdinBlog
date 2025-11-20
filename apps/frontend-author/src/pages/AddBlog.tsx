@@ -21,16 +21,19 @@ const AddBlog = () => {
 
   const onSubmit: SubmitHandler<TformInput> = async (data) => {
     const { title, content, publish } = data;
+    console.log(publish);
+
     try {
       const response = await fetch("/api/blog/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content, publish }),
+        body: JSON.stringify({ title, content, isPublished: publish }),
       });
 
       const json = await response.json();
+      console.log(json);
 
       if (!json.success) {
         setServerMessage(json.message);
