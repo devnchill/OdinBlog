@@ -12,7 +12,11 @@ const BlogPage = () => {
     );
 
   if (!data?.success) {
-    return <main>Error loading blogs.{data?.message}</main>;
+    return (
+      <main className="text-center text-[var(--color-primary)] text-3xl flex items-center justify-center">
+        Error loading blogs.{data?.message}
+      </main>
+    );
   }
 
   if (error)
