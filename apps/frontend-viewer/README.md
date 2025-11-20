@@ -1,69 +1,78 @@
-# React + TypeScript + Vite
+# Frontend Viewer - Blog App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend viewer for the **Chill Times** blog platform. It provides the UI for browsing posts, authenticating users, reading articles, and interacting with the app's features.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Modern and responsive UI
+- Like and Comment on blogs.
+- Browse all blogs
+- Read individual posts
+- Authentication pages (login/signup)
+- About & Contact pages
+- Integrated with backend API
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Requirements
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+Before running this project, make sure you have:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Node.js** (recommended: latest LTS)
+- **Yarn** package manager
+- Backend server running (for API routes)
+
+---
+
+## Environment Setup
+
+1. Locate the file named `.env.example` in the project root.
+2. Create a new file named `.env`.
+3. Copy all values from `.env.example` into `.env`.
+4. Fill in the correct values for your local or production environment.
+
+---
+
+## Setup & Installation
+
+Follow these steps to get the frontend running:
+
+1. **Install dependencies:**
+
+```bash
+yarn install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Generate Prisma configuration:**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+yarn prisma generate
 ```
+
+3. **Start the development server:**
+
+```bash
+yarn dev
+```
+
+The app will now be available at **<http://localhost:5173>** or the port shown in your terminal.
+
+---
+
+## Additional Notes
+
+- Ensure your backend `.env` matches what the frontend expects.
+- If the frontend cannot connect, double-check the API URL in your `.env`.
+- Restart the dev server anytime you modify `.env`.
+
+---
+
+## License
+
+This project is for personal / educational use unless a license is added.
+
+---
+
+Happy coding!
