@@ -1,66 +1,45 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
+import { useState } from "react";
+
 import { parseDate } from "../util/parseDate.mts";
+
+import useBlogDetails from "../hooks/useBlogDetails";
 import { useAuth } from "../hooks/useAuth";
+
 import {
   handleAddComment,
   handleDeleteComment,
   handleEditComment,
 } from "../api/comment";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import type {
-  IBlogDetailResponse,
-  TComment,
-  TReaction,
-} from "../types/blog.types";
+
+import type { TComment } from "../types/blog.types";
+
 import { ReactionComponent } from "../components/Blogs/ReactionComponent";
 
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
+
 const BlogDetailPage = () => {
-  const [blogDetailResponse, setBlogDetailResponse] =
-    useState<IBlogDetailResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [reactionId, setReactionId] = useState<string | null>(null);
-  const [reactionType, setReactionType] = useState<"LIKE" | "DISLIKE" | null>(
-    null,
-  );
-  const [comments, setComments] = useState<TComment[] | null>(null);
-  const [likeCount, setLikeCount] = useState(0);
-  const [dislikeCount, setDislikeCount] = useState(0);
   const [newComment, setNewComment] = useState<string>("");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-  const { slug } = useParams<{ slug: string }>();
-  const blogId = slug?.split("---").pop();
 
   const { role, id } = useAuth();
 
-  useEffect(() => {
-    fetch(`/api/blog/${blogId}`)
-      .then((res) => res.json())
-      .catch((e) => console.log(e))
-      .then((res: IBlogDetailResponse) => {
-        setBlogDetailResponse(res);
-        const likeCount = res.data?.Reaction.filter(
-          (r: TReaction) => r.type === "LIKE",
-        ).length;
-        const dislikeCount = res.data?.Reaction.filter(
-          (r: TReaction) => r.type === "DISLIKE",
-        ).length;
-        setComments(res.data.Comment);
-        setLikeCount(likeCount);
-        setDislikeCount(dislikeCount);
-        const reactionByUser = res.data.Reaction.find((r) => r.user.id === id);
-        if (reactionByUser) {
-          setReactionId(reactionByUser.id);
-          setReactionType(reactionByUser.type);
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [blogId, id]);
+  const {
+    likeCount,
+    dislikeCount,
+    blogDetailResponse,
+    isLoading,
+    comments,
+    reactionId,
+    reactionType,
+    setReactionId,
+    setReactionType,
+    setLikeCount,
+    setDislikeCount,
+    setComments,
+  } = useBlogDetails(id!);
 
   if (isLoading) return <div>Loading...</div>;
 
