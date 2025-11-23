@@ -4,23 +4,7 @@ import {
   deleteReaction,
   updateReaction,
 } from "../../api/reaction";
-import type { IBlogDetailResponse } from "../../types/blog.types";
-import type { Dispatch, SetStateAction } from "react";
-import type { IconType } from "react-icons";
-
-interface IReaction {
-  IconComponent: IconType;
-  reactionId: string | null;
-  role: string | null;
-  reactionType: "LIKE" | "DISLIKE" | null;
-  blogDetailResponse: IBlogDetailResponse | null;
-  setReactionId: (param: string | null) => void;
-  setReactionType: Dispatch<SetStateAction<"LIKE" | "DISLIKE" | null>>;
-  setLikeCount: (param: (p: number) => number) => void;
-  setDislikeCount: (param: (p: number) => number) => void;
-  reactionCount: number;
-  iconType: "LIKE" | "DISLIKE";
-}
+import type { IReaction } from "../../types/reaction.types";
 
 export const ReactionComponent = ({
   IconComponent,
