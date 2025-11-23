@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import type {
-  IBlogDetailResponse,
-  TComment,
-  TReaction,
-} from "../types/blog.types";
+import type { IBlogDetailResponse, TReaction } from "../types/blog.types";
 import { useParams } from "react-router";
+import type { TComment } from "../types/comment.types";
 
 const useBlogDetails = (id: string) => {
   const { slug } = useParams<{ slug: string }>();

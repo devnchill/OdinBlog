@@ -1,3 +1,5 @@
+import type { TComment } from "./comment.types";
+
 export interface IBlogResponse {
   data: IBlog[];
   success: boolean;
@@ -25,17 +27,6 @@ export interface IBlogDetail extends IBlog {
 export interface IBlogDetailResponse {
   data: IBlogDetail;
 }
-
-export type TComment = {
-  user: {
-    userName: string;
-    id: string;
-  };
-  id: string;
-  text: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export type TReaction = {
   id: string;

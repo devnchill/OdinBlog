@@ -37,6 +37,7 @@ export async function loginUser(
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,

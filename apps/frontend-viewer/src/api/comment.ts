@@ -1,3 +1,5 @@
+import type { ITCommentResponse } from "../types/comment.types";
+
 export async function handleAddComment(comment: string, blogId: string) {
   const response = await fetch(`/api/blog/${blogId}/comments/new`, {
     method: "POST",
@@ -6,7 +8,7 @@ export async function handleAddComment(comment: string, blogId: string) {
       text: comment,
     }),
   });
-  const json = await response.json();
+  const json: ITCommentResponse = await response.json();
   console.log(json);
   return json;
 }
