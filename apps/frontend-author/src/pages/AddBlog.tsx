@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import FormField from "../components/FormField";
+import { FormField } from "@odinblog/blog-shared-components";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 
