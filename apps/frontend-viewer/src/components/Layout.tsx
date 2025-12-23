@@ -1,5 +1,5 @@
 import NavBar from "../components/NavBar/NavBar";
-import Footer from "../components/Footer/Footer";
+import { Footer } from "@odinblog/blog-shared-components";
 import { Outlet } from "react-router";
 import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
@@ -30,7 +30,7 @@ export const Layout = () => {
     };
 
     bootstrapAuth();
-  }, []);
+  }, [saveId, saveRole]);
 
   return (
     <div className="h-screen bg-[var(--color-background)] text-[var(--color-surface)] grid grid-rows-[7%_1fr_auto]">
