@@ -41,6 +41,7 @@ const EditBlog = () => {
   }, [blogData, reset]);
 
   const onSubmit: SubmitHandler<TformInput> = async (data) => {
+    const { title, content, publish } = data;
     setIsSubmitting(true);
     try {
       const response = await fetch(`/api/blog/${blogData.id}`, {
@@ -48,7 +49,7 @@ const EditBlog = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ title, content, isPublished: publish }),
       });
 
       const json = await response.json();
