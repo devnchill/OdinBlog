@@ -3,7 +3,7 @@ import { type UseFormRegister } from "react-hook-form";
 interface IFormFieldProp {
   text: string;
   name: string;
-  type: "text" | "password";
+  type: "text" | "password" | "textarea";
   register: UseFormRegister<any>;
   options?: any;
 }

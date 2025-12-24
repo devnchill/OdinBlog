@@ -9,5 +9,6 @@
       "require": "./src/index.ts",
       "types": "./src/index.ts"
     }
-  }
+  },
+  "dependencies": {}
 }
