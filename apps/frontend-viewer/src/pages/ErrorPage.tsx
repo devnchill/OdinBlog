@@ -1,5 +1,13 @@
 const ErrorPage = () => {
-  return <div>Error oops page not found 404</div>;
+  return (
+    <div>
+      <img
+        className="h-screen w-screen object-fit"
+        src="/page_not_found.jpg"
+        alt="page not found"
+      />
+    </div>
+  );
 };
 
 export default ErrorPage;

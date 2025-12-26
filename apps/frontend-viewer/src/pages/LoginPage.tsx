@@ -32,9 +32,9 @@ const LoginPage = () => {
       saveId(json.id);
       navigate("/");
     } catch (err: unknown) {
-      console.log(err);
-
       setServerMessage("Network error.please try after some time");
+
+      console.log(err);
     }
   };
   return (
