@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router";
-import FormField from "../components/FormField";
+import { FormField } from "@odinblog/blog-shared-components";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
 
@@ -41,6 +41,7 @@ const EditBlog = () => {
   }, [blogData, reset]);
 
   const onSubmit: SubmitHandler<TformInput> = async (data) => {
+    const { title, content, publish } = data;
     setIsSubmitting(true);
     try {
       const response = await fetch(`/api/blog/${blogData.id}`, {
@@ -48,7 +49,7 @@ const EditBlog = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ title, content, isPublished: publish }),
       });
 
       const json = await response.json();

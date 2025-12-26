@@ -4,7 +4,7 @@ const sendSignUpRequest = async ({
   userName,
   password,
 }: TSendSignUpRequest) => {
-  const resSignup = await fetch("/api/signup/viewer", {
+  const resSignup = await fetch("/api/signup/author", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

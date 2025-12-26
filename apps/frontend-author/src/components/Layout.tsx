@@ -1,5 +1,5 @@
 import NavBar from "../components/NavBar/NavBar";
-import Footer from "../components/Footer/Footer";
+import { Footer } from "@odinblog/blog-shared-components";
 import { Outlet } from "react-router";
 
 export const Layout = () => {
