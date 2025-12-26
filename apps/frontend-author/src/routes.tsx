@@ -2,9 +2,11 @@ import { createBrowserRouter } from "react-router";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
-import { AboutPage } from "@odinblog/blog-shared-components";
-import { ContactPage } from "@odinblog/blog-shared-components";
-import ErrorPage from "./pages/ErrorPage";
+import {
+  AboutPage,
+  ContactPage,
+  ErrorPage,
+} from "@odinblog/blog-shared-components";
 import { Layout } from "./components/Layout";
 import DashBoard from "./pages/DashBoard";
 import BlogDetailPage from "./pages/BlogDetailPage";
