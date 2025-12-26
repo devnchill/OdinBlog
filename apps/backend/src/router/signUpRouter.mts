@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { createUser } from "../controller/signUpController.mjs";
+import { createUser, createAuthor } from "../controller/signUpController.mjs";
 
 const signUpRouter = Router();
 
-signUpRouter.post("/", createUser);
+signUpRouter.post("/viewer", createUser);
+signUpRouter.post("/author", createAuthor);
 export default signUpRouter;

@@ -3,15 +3,13 @@ import type { TSendSignUpRequest } from "../types/signup.types";
 const sendSignUpRequest = async ({
   userName,
   password,
-  role,
-  adminPassword,
 }: TSendSignUpRequest) => {
-  const resSignup = await fetch("/api/signup", {
+  const resSignup = await fetch("/api/signup/author", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userName, password, role, adminPassword }),
+    body: JSON.stringify({ userName, password }),
   });
 
   const response = await resSignup.json();

@@ -14,15 +14,12 @@ const SignUpPage = () => {
     handleSubmit,
     formState: { errors },
     setError,
-    watch,
   } = useForm<TSignUpFormInput>();
-
-  const role = watch("role", "USER");
 
   const [serverMessage, setServerMessage] = useState<string | null>(null);
 
   const onSubmit: SubmitHandler<TSignUpFormInput> = async (data) => {
-    const { userName, password, confirmPassword, role, adminPassword } = data;
+    const { userName, password, confirmPassword } = data;
     if (password !== confirmPassword) {
       setError("confirmPassword", {
         type: "manual",
@@ -34,8 +31,6 @@ const SignUpPage = () => {
       const responseSignup = await sendSignUpRequest({
         userName,
         password,
-        role,
-        adminPassword,
       });
 
       if (!responseSignup.success) {
@@ -58,7 +53,6 @@ const SignUpPage = () => {
         </p>
         <div className="border-[var(--color-border)] border-2 rounded-xl p-4 bg-[var(--color-darkish)] mb-18 mt-8">
           <SignUpForm
-            role={role}
             register={register}
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}

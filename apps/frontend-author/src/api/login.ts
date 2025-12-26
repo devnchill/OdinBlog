@@ -1,10 +1,10 @@
-import type { TSendloginRequest } from "../types/login.types";
+import type { TSendloginRequest } from "../types/login.types.ts";
 
 export const sendLoginRequest = async ({
   userName,
   password,
 }: TSendloginRequest) => {
-  const resLog = await fetch("/api/login/viewer", {
+  const resLog = await fetch("/api/login/author", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
