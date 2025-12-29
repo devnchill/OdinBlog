@@ -5,8 +5,10 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "npx tsc && node dist/app.mjs",
-    "build": "npx tsc",
+    "dev": "tsc && node dist/app.mjs",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "build": " tsc",
     "start": "node dist/app.mjs"
   },
   "dependencies": {
@@ -16,7 +18,8 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
@@ -24,6 +27,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.4.0",
     "dotenv": "^17.2.2",
-    "prisma": "^6.16.1"
+    "prisma": "^6.16.1",
+    "typescript": "^5.9.3"
   }
 }

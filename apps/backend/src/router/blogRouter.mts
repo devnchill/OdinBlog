@@ -14,7 +14,11 @@ import { Role } from "../generated/prisma/enums.js";
 import commentRouter from "./commentRouter.mjs";
 import reactionRouter from "./reactionRouter.mjs";
 import validateFields from "../middleware/validateFields.mjs";
-import { idSchema, blogBodySchema, blogIdSchema } from "@odinblog/zod-types";
+import { idSchema } from "../types/zod-types/user.types.mjs";
+import {
+  blogBodySchema,
+  blogIdSchema,
+} from "../types/zod-types/blog.types.mjs";
 
 const blogRouter = Router();
 

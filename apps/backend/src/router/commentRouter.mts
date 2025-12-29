@@ -8,11 +8,11 @@ import {
 } from "../controller/commentController.mjs";
 import validateFields from "../middleware/validateFields.mjs";
 import {
-  blogIdSchema,
   commentIdSchema,
   commentSchema,
-  idSchema,
-} from "@odinblog/zod-types";
+} from "../types/zod-types/comment.types.mjs";
+import { idSchema } from "../types/zod-types/user.types.mjs";
+import { blogIdSchema } from "../types/zod-types/blog.types.mjs";
 
 const commentRouter = Router({ mergeParams: true });
 

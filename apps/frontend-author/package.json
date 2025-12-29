@@ -5,14 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "@odinblog/zod-types": "*"
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react-swc": "^4.0.0",
