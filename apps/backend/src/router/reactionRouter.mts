@@ -7,12 +7,12 @@ import {
   updateReaction,
 } from "../controller/reactionController.mjs";
 import validateFields from "../middleware/validateFields.mjs";
+import { blogIdSchema } from "../types/zod-types/blog.types.mjs";
+import { idSchema } from "../types/zod-types/user.types.mjs";
 import {
-  blogIdSchema,
-  idSchema,
   reactionIdSchema,
   reactionSchema,
-} from "@odinblog/zod-types";
+} from "../types/zod-types/reaction.types.mjs";
 
 const reactionRouter = Router({ mergeParams: true });
 
