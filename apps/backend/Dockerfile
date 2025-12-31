@@ -13,5 +13,5 @@ RUN yarn install --production=false  --frozen-lockfile
 
 EXPOSE 8080
 
-CMD ["yarn", "run", "dev"]
+CMD ["sh", "./entrypoint.sh"]
 
