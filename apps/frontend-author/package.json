@@ -11,8 +11,7 @@
   },
   "dependencies": {
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "@odinblog/zod-types": "*"
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react-swc": "^4.0.0",
