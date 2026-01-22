@@ -9,7 +9,7 @@ const BlogDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const blogId = slug?.split("---").pop();
+  const blogId = slug?.split("----").pop();
 
   useEffect(() => {
     fetch(`/api/blog/authorBlogs/${blogId}`)
