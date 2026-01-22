@@ -5,7 +5,7 @@ import type { TComment } from "../types/comment.types";
 
 const useBlogDetails = (id: string) => {
   const { slug } = useParams<{ slug: string }>();
-  const blogId = slug?.split("---").pop();
+  const blogId = slug?.split("----").pop();
   const [blogDetailResponse, setBlogDetailResponse] =
     useState<IBlogDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +22,7 @@ const useBlogDetails = (id: string) => {
       try {
         const response = await fetch(`/api/blog/${blogId}`);
         const responseJson: IBlogDetailResponse = await response.json();
+        console.log(responseJson);
 
         setBlogDetailResponse(responseJson);
 
