@@ -14,7 +14,17 @@
   {
   	devShells.x86_64-linux.default=pkgs.mkShell{
 		nativeBuildInputs = with pkgs;[
-			yarn
+			yarn-berry_3
+
+			nil 
+			nixfmt 
+
+			vscode-json-languageserver 
+
+			prettier 
+			typescript-language-server
+			vscode-css-languageserver
+
 		];
 	};
   };
