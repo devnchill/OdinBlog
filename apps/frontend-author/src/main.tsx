@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./main.css";
+import "@odinblog/blog-shared-components/lib.css";
 import { RouterProvider } from "react-router";
 import router from "./routes";
 import { AuthProvider } from "./components/AuthProvider";

@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 
 export const Layout = () => {
   return (
-    <div className="h-screen bg-[var(--color-background)] text-[var(--color-surface)] grid grid-rows-[7%_1fr_auto]">
+    <div className="h-screen bg-(--color-background) text-(--color-surface) grid grid-rows-[7%_1fr_auto]">
       <NavBar />
       <Outlet />
       <Footer />

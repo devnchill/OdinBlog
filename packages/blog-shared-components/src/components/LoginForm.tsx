@@ -1,4 +1,23 @@
-import { FormField } from "./FormField.tsx";
+import { FormField } from "./FormField";
+import {
+  type FieldErrors,
+  type UseFormRegister,
+  type SubmitHandler,
+  type UseFormHandleSubmit,
+} from "react-hook-form";
+
+type LoginFormValues = {
+  userName: string;
+  password: string;
+};
+
+type LoginFormProp = {
+  serverMessage?: string;
+  handleSubmit: UseFormHandleSubmit<LoginFormValues>;
+  onSubmit: SubmitHandler<LoginFormValues>;
+  errors: FieldErrors<LoginFormValues>;
+  register: UseFormRegister<LoginFormValues>;
+};
 
 const LoginForm = ({
   register,
@@ -6,7 +25,7 @@ const LoginForm = ({
   onSubmit,
   errors,
   serverMessage,
-}) => {
+}: LoginFormProp) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
       <FormField

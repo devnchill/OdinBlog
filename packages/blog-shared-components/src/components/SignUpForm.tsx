@@ -1,11 +1,33 @@
-import { FormField } from "./FormField.tsx";
+import { FormField } from "./FormField";
+import {
+  type FieldErrors,
+  type UseFormRegister,
+  type SubmitHandler,
+  type UseFormHandleSubmit,
+} from "react-hook-form";
+
+type SignUpFormValues = {
+  userName: string;
+  password: string;
+  confirmPassword: string;
+  root?: string;
+};
+
+type SignUpFormProp = {
+  handleSubmit: UseFormHandleSubmit<SignUpFormValues>;
+  onSubmit: SubmitHandler<SignUpFormValues>;
+  errors: FieldErrors<SignUpFormValues>;
+  register: UseFormRegister<SignUpFormValues>;
+  serverMessage?: string;
+};
+
 const SignUpForm = ({
   handleSubmit,
   onSubmit,
   errors,
   register,
   serverMessage,
-}) => {
+}: SignUpFormProp) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

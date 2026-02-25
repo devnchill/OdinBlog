@@ -51,7 +51,7 @@ const LoginPage = () => {
             errors={errors}
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
-            serverMessage={serverMessage}
+            {...(serverMessage ? { serverMessage } : {})}
           />
           <p className="text-[var(--color-muted)]">
             Don't have an account?{" "}

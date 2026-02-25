@@ -57,7 +57,7 @@ const SignUpPage = () => {
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
             errors={errors}
-            serverMessage={serverMessage}
+            {...(serverMessage ? { serverMessage } : {})}
           />
           <p className="text-[var(--color-muted)]">
             Already have an account?{" "}
