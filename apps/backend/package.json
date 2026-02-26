@@ -5,10 +5,11 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "tsc && node dist/app.mjs",
-    "migrate:dev": "prisma migrate dev",
-    "migrate:deploy": "prisma migrate deploy",
-    "build": " tsc",
+    "backend:build": "tsc",
+    "backend:dev": "tsc && node dist/app.mjs",
+    "backend:migrate:dev": "prisma migrate dev",
+    "backend:migrate:deploy": "prisma migrate deploy",
+    "build": "tsc",
     "start": "node dist/app.mjs"
   },
   "dependencies": {

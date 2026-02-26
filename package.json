@@ -7,6 +7,10 @@
   "type": "module",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "all:build": "yarn workspaces foreach  -Apv run build",
+    "all:clean": "yarn workspaces foreach  -Apv run clean"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"

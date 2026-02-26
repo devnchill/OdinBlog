@@ -7,9 +7,10 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "build:css": "tailwindcss -i ./src/lib.css -o ./dist/lib.css --minify",
-    "dev:css": "tailwindcss -i ./src/lib.css -o ./dist/lib.css --watch"
+    "components:build": "tsc",
+    "components:css:build": "tailwindcss -i ./src/lib.css -o ./dist/lib.css --minify",
+    "components:css:dev": "tailwindcss -i ./src/lib.css -o ./dist/lib.css --watch",
+    "build": "tsc"
   },
   "exports": {
     ".": {

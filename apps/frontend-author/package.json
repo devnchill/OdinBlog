@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "author:dev": "vite",
+    "author:build": "vite build",
+    "author:lint": "eslint .",
+    "author:preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
