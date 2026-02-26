@@ -1,5 +1,5 @@
 {
-  description = "devshell for OdinBlog. installs docker and yarn";
+  description = "devshell for OdinBlog. installs yarn";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
