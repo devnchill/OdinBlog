@@ -1,7 +1,7 @@
 import { type NextFunction, type Request, type Response } from "express";
-import { Role } from "../generated/prisma/enums.js";
-import prisma from "../client/prismaClient.mjs";
-import type { User } from "../generated/prisma/client.js";
+import { Role } from "../../generated/prisma/enums.js";
+import type { User } from "../../generated/prisma/client.js";
+import { prisma } from "../../lib/prisma.js";
 
 export default function verifyRole(role: Role) {
   return async function (req: Request, res: Response, next: NextFunction) {

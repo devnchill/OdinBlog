@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import prisma from "../client/prismaClient.mjs";
 import bcrypt from "bcryptjs";
 import { generateTokens } from "../util/generateTokens.mjs";
+import { prisma } from "../../lib/prisma.js";
 
 export async function loginUser(
   req: Request,

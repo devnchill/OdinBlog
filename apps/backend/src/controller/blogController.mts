@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
-import { Prisma } from "../generated/prisma/client.js";
+import { Prisma } from "../../generated/prisma/client.js";
+import { prisma } from "../../lib/prisma.js";
 
 export async function getAllBlogs(
   _req: Request,
@@ -73,7 +73,7 @@ export async function getBlogOfAuthor(
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2025") {
+      if (e.code === "P2022") {
         return res.status(404).json({
           success: false,
           message: `Could not find blog with blogId ${blogId}`,

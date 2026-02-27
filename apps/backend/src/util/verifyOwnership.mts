@@ -1,4 +1,4 @@
-import { Role } from "../generated/prisma/enums.js";
+import { Role } from "../../generated/prisma/enums.js";
 import type { TUserOnReq } from "../types/express.mjs";
 
 type Ownable = { authorId: string } | { userId: string };

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import prisma from "../client/prismaClient.mjs";
 import verifyOwnership from "../util/verifyOwnership.mjs";
-import { Prisma } from "../generated/prisma/client.js";
+import { Prisma } from "../../generated/prisma/client.js";
+import { prisma } from "../../lib/prisma.js";
 
 export async function createReaction(
   req: Request,

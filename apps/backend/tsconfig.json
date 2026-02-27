@@ -2,12 +2,12 @@
 	// Visit https://aka.ms/tsconfig to read more about this file
 	"compilerOptions": {
 		// File Layout
-		"rootDir": "./src",
+		"rootDir": "./",
 		"outDir": "./dist",
 		// Environment Settings
 		// See also https://aka.ms/tsconfig/module
-		"module": "esnext",
-		"moduleResolution": "bundler",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"target": "es2023",
 		"types": [
 			"node",
@@ -39,5 +39,9 @@
 		"noUncheckedSideEffectImports": true,
 		"moduleDetection": "force",
 		"skipLibCheck": true
-	}
+	},
+	"include": [
+		"src/**/*",
+		"generated/**/*"
+	]
 }
