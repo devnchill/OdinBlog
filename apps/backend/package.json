@@ -7,13 +7,14 @@
   "scripts": {
     "backend:build": "tsc",
     "backend:dev": "tsc && node dist/app.mjs",
-    "backend:migrate:dev": "prisma migrate dev",
-    "backend:migrate:deploy": "prisma migrate deploy",
+    "backend:generate": "yarn prisma generate",
+    "backend:migrate:dev": "yarn prisma migrate dev",
+    "backend:migrate:deploy": "yarn prisma migrate deploy",
     "build": "tsc",
     "start": "node dist/app.mjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.1",
+    "@prisma/client": "7",
     "@types/express": "^5.0.3",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
@@ -28,7 +29,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.4.0",
     "dotenv": "^17.2.2",
-    "prisma": "^6.16.1",
+    "prisma": "7",
     "typescript": "^5.9.3"
   }
 }
