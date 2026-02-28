@@ -24,6 +24,7 @@
 
           vscode-json-languageserver
 
+          eslint
           prettier
           typescript-language-server
           vscode-css-languageserver
