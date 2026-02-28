@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import type { TUserOnReq } from "../types/express.mjs";
-import prisma from "../client/prismaClient.mjs";
 import { generateTokens } from "../util/generateTokens.mjs";
+import { prisma } from "../../lib/prisma.js";
 
 export async function verifyJwt(
   req: Request,

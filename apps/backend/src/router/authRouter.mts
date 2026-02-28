@@ -1,8 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
-import prisma from "../client/prismaClient.mjs";
 import { generateTokens } from "../util/generateTokens.mjs";
 import type { TUserOnReq } from "../types/express.mjs";
+import { prisma } from "../../lib/prisma.js";
 
 const authRouter = Router();
 

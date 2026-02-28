@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import prisma from "../client/prismaClient.mjs";
 import bcrypt from "bcryptjs";
+import { prisma } from "../../lib/prisma.js";
 
 export async function createUser(
   req: Request,

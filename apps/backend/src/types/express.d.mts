@@ -1,5 +1,5 @@
 import type { ZodSafeParseResult } from "zod";
-import { User } from "../generated/prisma/client.js";
+import { User } from "../../generated/prisma/client.js";
 
 export type TUserOnReq = Pick<User, "id" | "userName" | "role">;
 

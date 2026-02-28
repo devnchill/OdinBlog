@@ -10,7 +10,6 @@ import {
 } from "../controller/blogController.mjs";
 import { verifyJwt } from "../middleware/verifyToken.mjs";
 import verifyRole from "../middleware/verifyRole.mjs";
-import { Role } from "../generated/prisma/enums.js";
 import commentRouter from "./commentRouter.mjs";
 import reactionRouter from "./reactionRouter.mjs";
 import validateFields from "../middleware/validateFields.mjs";
@@ -19,6 +18,7 @@ import {
   blogBodySchema,
   blogIdSchema,
 } from "../types/zod-types/blog.types.mjs";
+import { Role } from "../../generated/prisma/enums.js";
 
 const blogRouter = Router();
 
