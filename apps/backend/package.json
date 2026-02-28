@@ -11,7 +11,7 @@
     "backend:migrate:dev": "yarn dlx prisma migrate dev",
     "backend:migrate:deploy": "yarn dlx prisma migrate deploy",
     "build": "tsc",
-    "dev": "tsc && node dist/app.mjs",
+    "dev": "tsc && node ./dist/src/app.mjs",
     "start": "node dist/app.mjs"
   },
   "dependencies": {
