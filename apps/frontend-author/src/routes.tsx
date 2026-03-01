@@ -12,6 +12,7 @@ import DashBoard from "./pages/DashBoard";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import AddBlog from "./pages/AddBlog";
 import EditBlog from "./pages/EditBlog";
+import TMCE from "./pages/editor";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { path: "/write", element: <AddBlog /> },
       { path: "/edit/:blogId", element: <EditBlog /> },
       { path: "/blog/:slug", element: <BlogDetailPage /> },
+      { path: "/tinymce", element: <TMCE /> },
     ],
     errorElement: <ErrorPage />,
   },
