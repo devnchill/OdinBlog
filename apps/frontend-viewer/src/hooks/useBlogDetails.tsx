@@ -5,7 +5,7 @@ import type { TComment } from "../types/comment.types";
 
 const useBlogDetails = (id: string) => {
   const { slug } = useParams<{ slug: string }>();
-  const blogId = slug?.split("----").pop();
+  const blogId = slug?.split("---").pop();
   const [blogDetailResponse, setBlogDetailResponse] =
     useState<IBlogDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
