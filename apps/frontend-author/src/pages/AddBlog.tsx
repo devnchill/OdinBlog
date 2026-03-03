@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router";
 import { FormField } from "@odinblog/blog-shared-components";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { useState } from "react";
+import { Editor } from "@tinymce/tinymce-react";
 
 type TformInput = {
   title: string;
@@ -17,11 +18,12 @@ const AddBlog = () => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<TformInput>();
 
   const onSubmit: SubmitHandler<TformInput> = async (data) => {
     const { title, content, publish } = data;
-    console.log(publish);
+    console.log(data);
 
     try {
       const response = await fetch("/api/blog/new", {
@@ -49,7 +51,7 @@ const AddBlog = () => {
 
   return (
     <main className="flex justify-center items-center p-8">
-      <div className="w-full md:w-80">
+      <div className="w-full md:w-3xl">
         <p className="text-center text-3xl my-8 text-[var(--color-muted)]">
           Create Blog
         </p>
@@ -82,17 +84,32 @@ const AddBlog = () => {
                 {errors.title.message}
               </span>
             )}
-
             {/* Content Field */}
-            <FormField
-              text="Content"
+            <label className="text-[var(--color-muted)]">Content</label>
+
+            <Controller
               name="content"
-              register={register}
-              type="textarea"
-              options={{
-                required: { value: true, message: "Content is required" },
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Content is required",
               }}
+              render={({ field }) => (
+                <Editor
+                  apiKey="m9xlcut1e23m1vh78du64dyxwboghuzoak8wgy82gmub9bzw"
+                  value={field.value}
+                  onEditorChange={field.onChange}
+                  init={{
+                    height: 400,
+                    menubar: false,
+                    plugins: ["link", "image", "lists", "code", "table"],
+                    toolbar:
+                      "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | code",
+                  }}
+                />
+              )}
             />
+
             {errors.content && (
               <span className="text-[var(--color-primary)] italic">
                 {errors.content.message}

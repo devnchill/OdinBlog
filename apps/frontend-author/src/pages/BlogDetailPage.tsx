@@ -9,7 +9,7 @@ const BlogDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const blogId = slug?.split("----").pop();
+  const blogId = slug?.split("---").pop();
 
   useEffect(() => {
     fetch(`/api/blog/authorBlogs/${blogId}`)
@@ -32,7 +32,7 @@ const BlogDetailPage = () => {
     try {
       const res = await fetch(`/api/blog/${blogId}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete blog");
-      navigate("/myblogs");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       alert("Error deleting blog");
@@ -48,9 +48,9 @@ const BlogDetailPage = () => {
 
   return (
     <main className="m-4 rounded-xl">
-      <article className="bg-[var(--color-darkish)] m-4 rounded-xl p-8">
+      <article className="bg-(--color-darkish) m-4 rounded-xl p-8">
         <header className="flex justify-between items-center mb-6">
-          <h2 className="text-lg md:text-3xl font-bold text-center text-[var(--color-carbon)] bg-[var(--color-primary)] rounded-xl p-2 flex-1">
+          <h2 className="text-lg md:text-3xl font-bold text-center text-(--color-carbon) bg-(--color-primary) rounded-xl p-2 flex-1">
             {blogDetailResponse?.data?.title}
           </h2>
           <div className="flex gap-3 ml-4">
@@ -69,12 +69,14 @@ const BlogDetailPage = () => {
           </div>
         </header>
 
-        <p className="text-[var(--color-surface)] my-8 md:text-lg whitespace-pre-wrap">
-          {blogDetailResponse?.data?.content}
-        </p>
-
-        <section className="bg-[var(--color-black-pearl)] flex justify-between px-4 py-2 border-2 border-[var(--color-border)] rounded-md md:rounded-lg my-4">
-          <p className="text-[var(--color-muted)] italic">
+        <div
+          className="text-(--color-surface) my-8 md:text-lg"
+          dangerouslySetInnerHTML={{
+            __html: blogDetailResponse?.data?.content || "",
+          }}
+        />
+        <section className="bg-(--color-black-pearl) flex justify-between px-4 py-2 border-2 border-(--color-border) rounded-md md:rounded-lg my-4">
+          <p className="text-(--color-muted) italic">
             {parseDate(blogDetailResponse!.data!.createdAt)}
           </p>
         </section>

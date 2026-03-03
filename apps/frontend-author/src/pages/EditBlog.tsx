@@ -1,7 +1,8 @@
 import { useNavigate, useLocation } from "react-router";
 import { FormField } from "@odinblog/blog-shared-components";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
+import { Editor } from "@tinymce/tinymce-react";
 
 type TformInput = {
   title: string;
@@ -22,6 +23,7 @@ const EditBlog = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<TformInput>({
     defaultValues: {
       title: "",
@@ -68,7 +70,7 @@ const EditBlog = () => {
 
   if (!blogData) {
     return (
-      <div className="text-center text-[var(--color-primary)] mt-10">
+      <div className="text-center text-(--color-primary) mt-10">
         No blog data found. Try reopening the editor.
       </div>
     );
@@ -76,11 +78,11 @@ const EditBlog = () => {
 
   return (
     <main className="flex justify-center items-center p-8">
-      <div className="w-full md:w-80">
-        <p className="text-center text-3xl my-8 text-[var(--color-muted)]">
+      <div className="w-full md:w-4xl">
+        <p className="text-center text-3xl my-8 text-(--color-muted)">
           Edit Blog
         </p>
-        <div className="border-[var(--color-border)] border-2 rounded-xl p-4 bg-[var(--color-darkish)]">
+        <div className="border-(--color-border) border-2 rounded-xl p-4 bg-(--color-darkish)">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-3"
@@ -102,44 +104,59 @@ const EditBlog = () => {
                 },
               }}
             />
+            <Controller
+              name="content"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Content is required",
+              }}
+              render={({ field }) => (
+                <Editor
+                  apiKey="m9xlcut1e23m1vh78du64dyxwboghuzoak8wgy82gmub9bzw"
+                  value={field.value}
+                  onEditorChange={field.onChange}
+                  init={{
+                    height: 400,
+                    menubar: false,
+                    plugins: ["link", "image", "lists", "code", "table"],
+                    toolbar:
+                      "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | code",
+                  }}
+                />
+              )}
+            />
             {errors.title && (
-              <span className="text-[var(--color-primary)] italic">
+              <span className="text-(--color-primary) italic">
                 {errors.title.message}
               </span>
             )}
-            <FormField
-              text="content"
-              name="content"
-              register={register}
-              type="textarea"
-              options={{ required: true }}
-            />
             {errors.content && (
-              <span className="text-[var(--color-primary)] italic">
+              <span className="text-(--color-primary) italic">
                 {errors.content.message}
               </span>
             )}
 
             <div className="flex items-center gap-2 mt-2">
-              <label htmlFor="publish" className="text-[var(--color-muted)]">
+              <label htmlFor="publish" className="text-(--color-muted)">
                 Publish:
               </label>
               <input
                 id="publish"
                 type="checkbox"
                 {...register("publish")}
-                className="accent-[var(--color-primary)]"
+                className="accent-(--color-primary)"
               />
             </div>
 
             {serverMessage && (
-              <span className="text-[var(--color-primary)] italic">
+              <span className="text-(--color-primary) italic">
                 {serverMessage}
               </span>
             )}
             <button
               disabled={isSubmitting}
-              className="text-center my-4 text-[var(--color-muted)] bg-[var(--color-carbon)] p-1 border border-[var(--color-border)] rounded-md hover:bg-[var(--color-carbon)] disabled:opacity-60"
+              className="text-center my-4 text-(--color-muted) bg-(--color-carbon) p-1 border border-(--color-border) rounded-md hover:bg-(--color-carbon) disabled:opacity-60"
             >
               {isSubmitting ? "Updating..." : "Update Blog"}
             </button>
