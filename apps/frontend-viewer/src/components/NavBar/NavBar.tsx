@@ -28,7 +28,7 @@ const NavBar = () => {
       <h1>
         <Link
           to="/"
-          className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-[var(--color-primary)]"
+          className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-(--color-primary)"
         >
           Chill Times
         </Link>

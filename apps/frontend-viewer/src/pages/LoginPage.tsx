@@ -40,10 +40,8 @@ const LoginPage = () => {
   return (
     <main className="flex justify-center items-center ">
       <div className="w-full md:w-80">
-        <p className="text-center text-3xl my-8 text-[var(--color-muted)]">
-          Log in
-        </p>
-        <div className="border-[var(--color-border)] border-2 rounded-xl p-4 bg-[var(--color-darkish)]">
+        <p className="text-center text-3xl my-8 text-(--color-muted)">Log in</p>
+        <div className="border-(--color-border) border-2 rounded-xl p-4 bg-(--color-darkish)">
           <LoginForm
             register={register}
             errors={errors}
@@ -51,11 +49,11 @@ const LoginPage = () => {
             onSubmit={onSubmit}
             {...(serverMessage ? { serverMessage } : {})}
           />
-          <p className="text-[var(--color-muted)]">
+          <p className="text-(--color-muted)">
             Don't have an account?{" "}
             <Link
               to={"/signup"}
-              className="text-[var(--color-stone-cold)] hover:text-[var(--color-carbon)]"
+              className="text-(--color-stone-cold) hover:text(--color-carbon)"
             >
               Sign up
             </Link>
