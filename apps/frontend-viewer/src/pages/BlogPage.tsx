@@ -23,12 +23,19 @@ const BlogPage = () => {
     return (
       <main className="text-center text-[var(--color-primary)]">{error}</main>
     );
+  console.log("displaying blogs");
 
   return (
     <main className="grid gap-6 p-8 auto-rows-min">
-      {data?.data.map((blog) => (
-        <BlogCard blog={blog} key={blog.id} />
-      ))}
+      {data.data.length == 0 ? (
+        <img
+          className="h-screen w-screen"
+          src="/empty.svg"
+          alt="no blogs yet"
+        />
+      ) : (
+        data?.data.map((blog) => <BlogCard blog={blog} key={blog.id} />)
+      )}
     </main>
   );
 };

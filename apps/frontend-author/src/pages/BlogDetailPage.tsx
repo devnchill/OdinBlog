@@ -32,7 +32,7 @@ const BlogDetailPage = () => {
     try {
       const res = await fetch(`/api/blog/${blogId}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete blog");
-      navigate("/dashboard");
+      navigate("/myblogs");
     } catch (err) {
       console.error(err);
       alert("Error deleting blog");

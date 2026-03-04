@@ -42,7 +42,7 @@ const AddBlog = () => {
         return;
       }
 
-      navigate("/dashboard");
+      navigate("/myblogs");
     } catch (err: unknown) {
       setServerMessage("Network error. Please try again later.");
       console.error(err);
