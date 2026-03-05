@@ -5,10 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: action/checkout@v5
+        uses: actions/checkout@v5
 
       - name: Setup Node Js
-        uses: action/setup-node@v6
+        uses: actions/setup-node@v6
 
       - name: Setup Yarn
         uses: threeal/setup-yarn-action@v2.0.0
