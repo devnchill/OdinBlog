@@ -1,28 +1,35 @@
-name: build everything
+name: check everything builds properly
+run-name: ${{ github.actor }} is building everything
+
 on: [push]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Clone the repo
         uses: actions/checkout@v5
 
-      - name: Setup Node Js
-        uses: actions/setup-node@v6
-
-      - name: Setup Yarn
-        uses: threeal/setup-yarn-action@v2.0.0
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          version: latest
+          node-version: 24.13
+          cache: "yarn"
 
-      - name: install dependencies
-        run: yarn install
+      - name: enable corepack
+        run: corepack enable
 
-      - name: generate prisma
+      - name: Prepare Yarn version
+        run: corepack prepare yarn@stable --activate
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Generate Prisma
         run: yarn backend:generate
 
-      - name: generate tailwind classes
+      - name: Generate CSS
         run: yarn components:css:build
 
-      - name: build apps and packages
+      - name: Build
         run: yarn all:build
