@@ -1,0 +1,40 @@
+name: check everything builds properly
+run-name: ${{ github.actor }} is building everything
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "postgresql://postgres:password@localhost:5432/odin_blog"
+    steps:
+      - name: Clone the repo
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.13
+          cache: "yarn"
+
+      - name: enable corepack
+        run: corepack enable
+
+      - name: Prepare Yarn version
+        run: corepack prepare yarn@stable --activate
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Generate Prisma
+        run: yarn backend:generate
+
+      - name: Generate CSS
+        run: yarn components:css:build
+
+      - name: Build
+        run: yarn all:build
