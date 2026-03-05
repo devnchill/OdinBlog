@@ -1,0 +1,29 @@
+name: build everything
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: action/checkout@v5
+
+      - name: Setup Node Js
+        uses: action/setup-node@v6
+
+      - name: Setup Yarn
+        uses: threeal/setup-yarn-action@v2.0.0
+        with:
+          version: latest
+          cache: true
+
+      - name: install dependencies
+        run: yarn install
+
+      - name: generate prisma
+        run: yarn backend:generate
+
+      - name: generate tailwind classes
+        run: yarn components:css:build
+
+      - name: build apps and packages
+        run: yarn all:build
